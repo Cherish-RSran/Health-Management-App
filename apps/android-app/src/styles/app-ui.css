@@ -1,0 +1,302 @@
+/* 本机版新增的样式：底部 tabBar、全局 toast / loading / 弹窗 / 动作菜单
+   小程序里这些由微信原生提供，H5 需要自己实现 */
+
+/* ============ 底部导航（对应 app.json 的 tabBar） ============ */
+.tabbar {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  display: flex;
+  background: #FFFFFF;
+  border-top: 1px solid #E4E8ED;
+  /* env() 在多数安卓 WebView 上恒为 0，单靠它挡不住手势导航条，
+     所以叠一个 rpx 的保底值（小程序由原生 tabBar 托管，不存在这个问题） */
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 14 * var(--rpx));
+  z-index: 900;
+}
+.tabbar .item {
+  flex: 1;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: calc(12 * var(--rpx)) 0 calc(10 * var(--rpx));
+  color: #9AA3AE;
+  font-size: calc(22 * var(--rpx));
+}
+.tabbar .item .ico {
+  font-size: calc(40 * var(--rpx));
+  line-height: 1.2;
+  margin-bottom: calc(4 * var(--rpx));
+}
+.tabbar .item.on { color: #0E9F6E; font-weight: 600; }
+
+/* tabBar 占位，避免内容被挡住 */
+.has-tabbar { padding-bottom: calc(120 * var(--rpx)); }
+
+/* ============ 顶部返回栏（对应小程序导航栏） ============ */
+.navbar {
+  position: sticky; top: 0; z-index: 800;
+  display: flex; align-items: center;
+  height: calc(96 * var(--rpx));
+  padding: 0 calc(24 * var(--rpx));
+  background: #FFFFFF;
+  border-bottom: 1px solid #EEF1F4;
+}
+.navbar .back {
+  width: calc(64 * var(--rpx));
+  font-size: calc(40 * var(--rpx));
+  color: #6B7280;
+}
+.navbar .title {
+  flex: 1; text-align: center;
+  font-size: calc(32 * var(--rpx));
+  font-weight: 600;
+}
+.navbar .right { width: calc(64 * var(--rpx)); }
+
+/* 小程序里 tabBar 是原生层、永远在下层；H5 里是自绘的 fixed 元素，
+   所以弹层和悬浮按钮都要抬到它上面，否则会被压住 */
+.mask { z-index: 1500; }
+.has-tabbar .fab { bottom: calc(150 * var(--rpx)); }
+
+/* 原生输入控件：去掉 WebView 默认边框/外观。
+   带类名的（.input / .textarea / .m-input / .picker）特异性更高，
+   它们自己的边框样式不受影响，这里只管没有专门样式的裸 input。 */
+input, textarea {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: inherit;
+  color: inherit;
+}
+
+/* 原生输入控件：去掉 WebView 默认外观，对齐小程序的 picker / input 观感 */
+input.input, input.picker, textarea.textarea {
+  -webkit-appearance: none;
+  appearance: none;
+  outline: none;
+  min-height: calc(76 * var(--rpx));
+  color: var(--text);
+  font-family: inherit;
+}
+input[type="date"] { min-height: calc(76 * var(--rpx)); }
+
+/* 记录页第二步：日期文字 + 盖在上面的透明日期控件 */
+.day-date-wrap { position: relative; flex: 1; min-width: 0; }
+.day-date-input {
+  position: absolute; left: 0; top: 0;
+  width: 100%; height: 100%;
+  opacity: 0; border: none; background: transparent;
+  min-height: 0;
+}
+
+/* ============ 轻提示 ============ */
+.toast {
+  position: fixed;
+  left: 50%; top: 42%;
+  transform: translate(-50%, -50%);
+  max-width: 76vw;
+  padding: calc(22 * var(--rpx)) calc(34 * var(--rpx));
+  border-radius: calc(18 * var(--rpx));
+  background: rgba(22, 25, 31, .88);
+  color: #fff;
+  font-size: calc(27 * var(--rpx));
+  line-height: 1.5;
+  text-align: center;
+  z-index: 3000;
+}
+.toast .ok { display: block; font-size: calc(48 * var(--rpx)); margin-bottom: calc(8 * var(--rpx)); }
+
+/* ============ 全屏 loading ============ */
+.loading-mask {
+  position: fixed; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(0, 0, 0, .18);
+  z-index: 2800;
+}
+.loading-box {
+  padding: calc(30 * var(--rpx)) calc(40 * var(--rpx));
+  border-radius: calc(18 * var(--rpx));
+  background: rgba(22, 25, 31, .85);
+  color: #fff;
+  font-size: calc(27 * var(--rpx));
+  text-align: center;
+}
+.loading-box .spin {
+  display: block;
+  width: calc(48 * var(--rpx)); height: calc(48 * var(--rpx));
+  margin: 0 auto calc(14 * var(--rpx));
+  border: 3px solid rgba(255, 255, 255, .3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin .8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ============ 弹窗 ============ */
+.modal-mask {
+  position: fixed; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(0, 0, 0, .38);
+  z-index: 2900;
+  padding: 0 calc(60 * var(--rpx));
+}
+.modal {
+  width: 100%;
+  background: #fff;
+  border-radius: calc(24 * var(--rpx));
+  overflow: hidden;
+}
+.modal .m-title {
+  padding: calc(34 * var(--rpx)) calc(32 * var(--rpx)) calc(12 * var(--rpx));
+  font-size: calc(32 * var(--rpx));
+  font-weight: 600;
+  text-align: center;
+}
+.modal .m-content {
+  padding: 0 calc(32 * var(--rpx)) calc(28 * var(--rpx));
+  font-size: calc(27 * var(--rpx));
+  color: #6B7280;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  text-align: center;
+}
+.modal .m-input {
+  width: 100%;
+  margin: 0 calc(32 * var(--rpx)) calc(24 * var(--rpx));
+  width: calc(100% - 64 * var(--rpx));
+  padding: calc(20 * var(--rpx)) calc(22 * var(--rpx));
+  border: 1px solid #E4E8ED;
+  border-radius: calc(14 * var(--rpx));
+  font-size: calc(28 * var(--rpx));
+  background: #F7F9FB;
+}
+.modal .m-ft {
+  display: flex;
+  border-top: 1px solid #EEF1F4;
+}
+.modal .m-ft > div {
+  flex: 1;
+  padding: calc(26 * var(--rpx)) 0;
+  text-align: center;
+  font-size: calc(30 * var(--rpx));
+  color: #6B7280;
+}
+.modal .m-ft .ok { color: #0B8057; font-weight: 600; }
+.modal .m-ft > div + div { border-left: 1px solid #EEF1F4; }
+
+/* ============ 动作菜单 ============ */
+.sheet-mask {
+  position: fixed; inset: 0;
+  display: flex; align-items: flex-end;
+  background: rgba(0, 0, 0, .38);
+  z-index: 2900;
+}
+.action-sheet {
+  width: 100%;
+  background: #fff;
+  border-radius: calc(24 * var(--rpx)) calc(24 * var(--rpx)) 0 0;
+  overflow: hidden;
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 14 * var(--rpx));
+}
+.action-sheet .as-head {
+  padding: calc(24 * var(--rpx));
+  text-align: center;
+  font-size: calc(24 * var(--rpx));
+  color: #9CA3AF;
+  border-bottom: 1px solid #EEF1F4;
+}
+.action-sheet .as-item {
+  padding: calc(30 * var(--rpx));
+  text-align: center;
+  font-size: calc(30 * var(--rpx));
+  border-bottom: 1px solid #F2F5F8;
+}
+.action-sheet .as-item:active { background: #F7F9FB; }
+.action-sheet .as-cancel {
+  margin-top: calc(14 * var(--rpx));
+  padding: calc(30 * var(--rpx));
+  text-align: center;
+  font-size: calc(30 * var(--rpx));
+  color: #6B7280;
+  background: #fff;
+}
+
+/* ============ 登录 / 注册页 ============ */
+.login-wrap { padding: calc(60 * var(--rpx)) calc(40 * var(--rpx)) 0; }
+.login-wrap .lg-logo {
+  font-size: calc(72 * var(--rpx));
+  text-align: center;
+  margin-bottom: calc(10 * var(--rpx));
+}
+.login-wrap .lg-title {
+  text-align: center;
+  font-size: calc(38 * var(--rpx));
+  font-weight: 700;
+  margin-bottom: calc(8 * var(--rpx));
+}
+.login-wrap .lg-sub {
+  text-align: center;
+  font-size: calc(24 * var(--rpx));
+  color: #9CA3AF;
+  line-height: 1.7;
+  margin-bottom: calc(48 * var(--rpx));
+}
+
+.lg-tabs {
+  display: flex;
+  margin: 0 calc(28 * var(--rpx)) calc(24 * var(--rpx));
+  background: #F2F5F8;
+  border-radius: calc(18 * var(--rpx));
+  padding: calc(6 * var(--rpx));
+}
+.lg-tabs .lg-tab {
+  flex: 1;
+  padding: calc(18 * var(--rpx)) 0;
+  text-align: center;
+  font-size: calc(28 * var(--rpx));
+  color: #6B7280;
+  border-radius: calc(14 * var(--rpx));
+}
+.lg-tabs .lg-tab.on {
+  background: #fff;
+  color: #0B8057;
+  font-weight: 600;
+}
+
+.lg-fld { padding: calc(18 * var(--rpx)) calc(28 * var(--rpx)); }
+.lg-fld .lg-label {
+  font-size: calc(24 * var(--rpx));
+  color: #6B7280;
+  margin-bottom: calc(10 * var(--rpx));
+}
+.lg-fld input {
+  width: 100%;
+  padding: calc(22 * var(--rpx)) calc(24 * var(--rpx));
+  border: 1px solid #E4E8ED;
+  border-radius: calc(16 * var(--rpx));
+  background: #F7F9FB;
+  font-size: calc(30 * var(--rpx));
+  min-height: calc(88 * var(--rpx));
+}
+.lg-fld input:focus { border-color: #0E9F6E; background: #fff; }
+.lg-fld .lg-hint {
+  font-size: calc(22 * var(--rpx));
+  color: #9CA3AF;
+  margin-top: calc(10 * var(--rpx));
+  line-height: 1.6;
+}
+.lg-err {
+  margin: 0 calc(28 * var(--rpx)) calc(16 * var(--rpx));
+  padding: calc(16 * var(--rpx)) calc(20 * var(--rpx));
+  border-radius: calc(14 * var(--rpx));
+  background: #FEF2F2;
+  color: #B91C1C;
+  font-size: calc(25 * var(--rpx));
+  line-height: 1.6;
+}
+.lg-guest {
+  margin-top: calc(28 * var(--rpx));
+  text-align: center;
+  font-size: calc(26 * var(--rpx));
+  color: #0B8057;
+  padding: calc(20 * var(--rpx));
+}

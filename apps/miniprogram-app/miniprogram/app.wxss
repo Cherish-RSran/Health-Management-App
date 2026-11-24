@@ -1,0 +1,211 @@
+/**
+ * 全局样式 · 设计 token + 通用类
+ * 所有页面复用，页面 wxss 只写自己独有的部分
+ */
+
+/* ============ 设计 token ============ */
+page {
+  --brand:      #0E9F6E;
+  --brand-2:    #E7F6F0;
+  --brand-3:    #0B8057;
+  --bg:         #F4F6F8;
+  --card:       #FFFFFF;
+  --text:       #16191F;
+  --t2:         #6B7280;
+  --t3:         #9CA3AF;
+  --line:       #EEF1F4;
+  --line2:      #E4E8ED;
+  --warn:       #F97316;
+  --danger:     #EF4444;
+  --success:    #22C55E;
+
+  --kind-condition: #C2410C;  --kind-condition-bg: #FFF1E7;
+  --kind-visit:     #1D4ED8;  --kind-visit-bg:     #EAF1FF;
+  --kind-exam:      #6D28D9;  --kind-exam-bg:      #F3EEFF;
+  --kind-checkup:   #0E7490;  --kind-checkup-bg:   #E4F6FB;
+  --kind-vaccine:   #15803D;  --kind-vaccine-bg:   #E7F7ED;
+  --kind-metric:    #B45309;  --kind-metric-bg:    #FEF3E2;
+
+  /* 字号（大字模式会覆盖这几个变量） */
+  --fs-title: 34rpx;
+  --fs-head:  32rpx;
+  --fs-body:  28rpx;
+  --fs-sub:   24rpx;
+  --fs-mini:  22rpx;
+
+  --radius:    28rpx;
+  --radius-sm: 18rpx;
+
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif;
+  font-size: var(--fs-body);
+  line-height: 1.65;
+}
+
+/* 大字模式：只改字号变量，布局自然放大 */
+page.big-mode,
+.big-mode {
+  --fs-title: 40rpx;
+  --fs-head:  37rpx;
+  --fs-body:  32rpx;
+  --fs-sub:   28rpx;
+  --fs-mini:  25rpx;
+}
+
+view, text, scroll-view, button, input, textarea, picker, label {
+  box-sizing: border-box;
+}
+
+/* ============ 布局 ============ */
+.page {
+  min-height: 100vh;
+  padding-bottom: 40rpx;
+}
+.px { padding-left: 28rpx; padding-right: 28rpx; }
+.mt8 { margin-top: 8rpx; }
+.mt16 { margin-top: 16rpx; }
+.mt24 { margin-top: 24rpx; }
+.row-between { display: flex; align-items: center; justify-content: space-between; }
+.row-center { display: flex; align-items: center; }
+.flex1 { flex: 1; min-width: 0; }
+.ellipsis {
+  overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+}
+
+/* ============ 卡片 ============ */
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  margin: 20rpx 28rpx;
+  padding: 28rpx;
+}
+.card-tight { padding: 8rpx 28rpx; }
+.card-flat { box-shadow: none; }
+
+.sec-title {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 20rpx;
+}
+.sec-title .h {
+  display: flex; align-items: center;
+  font-size: var(--fs-head); font-weight: 600;
+}
+.sec-title .bar {
+  width: 6rpx; height: 28rpx; border-radius: 4rpx;
+  background: var(--brand); margin-right: 12rpx;
+}
+.sec-title .more { font-size: var(--fs-mini); color: var(--t3); }
+
+/* ============ 文本 ============ */
+.muted { color: var(--t3); font-size: var(--fs-sub); }
+.body  { font-size: var(--fs-body); }
+.title { font-size: var(--fs-title); font-weight: 700; }
+.bold  { font-weight: 600; }
+.warn  { color: var(--warn); }
+.danger{ color: var(--danger); }
+.brand { color: var(--brand-3); }
+
+/* ============ 行 ============ */
+.row {
+  display: flex; align-items: center;
+  padding: 26rpx 0;
+  position: relative;
+}
+.row + .row::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0;
+  height: 1rpx; background: var(--line);
+}
+.row .ic {
+  width: 68rpx; height: 68rpx; border-radius: 20rpx;
+  display: flex; align-items: center; justify-content: center;
+  font-size: var(--fs-body); font-weight: 600;
+  flex-shrink: 0; margin-right: 22rpx;
+}
+.row .tx { flex: 1; min-width: 0; }
+.row .tx .t1 { font-size: var(--fs-body); font-weight: 500; }
+.row .tx .t2 { font-size: var(--fs-mini); color: var(--t3); margin-top: 6rpx; }
+.row .go { color: #CBD2DA; font-size: 32rpx; margin-left: 12rpx; }
+
+/* 虚线「＋ 添加」行 */
+.addline {
+  display: flex; align-items: center; justify-content: center;
+  padding: 24rpx 0 8rpx;
+  font-size: var(--fs-sub); color: var(--brand-3); font-weight: 600;
+}
+
+/* ============ 键值 ============ */
+.kv { display: flex; padding: 16rpx 0; font-size: var(--fs-body); }
+.kv + .kv { border-top: 1rpx solid var(--line); }
+.kv .k { width: 140rpx; flex-shrink: 0; color: var(--t3); font-size: var(--fs-sub); }
+.kv .v { flex: 1; min-width: 0; }
+
+/* ============ 按钮 ============ */
+.btn {
+  height: 92rpx; border-radius: 24rpx;
+  display: flex; align-items: center; justify-content: center;
+  font-size: var(--fs-body); font-weight: 600;
+  border: none; line-height: 1;
+}
+.btn::after { border: none; }
+.btn-primary { background: var(--brand); color: #fff; }
+.btn-ghost {
+  background: #fff; color: var(--brand-3);
+  border: 2rpx solid var(--brand-2);
+}
+.btn-plain { background: #F2F5F8; color: var(--t2); }
+.btn-sm { height: 68rpx; font-size: var(--fs-sub); border-radius: 18rpx; }
+.btn-block { margin: 0 28rpx; }
+.btn-disabled { opacity: .5; }
+
+/* ============ 标签 / 徽标 ============ */
+.badge {
+  width: 80rpx; height: 80rpx; border-radius: 22rpx;
+  display: flex; align-items: center; justify-content: center;
+  font-size: var(--fs-sub); font-weight: 700; flex-shrink: 0;
+}
+.tag {
+  display: inline-flex; align-items: center;
+  padding: 4rpx 14rpx; border-radius: 10rpx;
+  font-size: var(--fs-mini); line-height: 1.6;
+}
+.tag-grey  { background: #F2F5F8; color: var(--t2); }
+.tag-al    { background: #FEF0EE; color: #C2410C; }
+.tag-ch    { background: #EEF2FF; color: #4338CA; }
+.tag-md    { background: #E9F7F1; color: #0B8057; }
+.tag-su    { background: #F5F3FF; color: #6D28D9; }
+.tag-short { background: #FEF3C7; color: #B45309; }
+
+/* ============ 筛选条 ============ */
+.filters {
+  background: var(--card);
+  padding: 16rpx 0 20rpx;
+  position: sticky; top: 0; z-index: 10;
+}
+.frow {
+  display: flex; white-space: nowrap;
+  padding: 8rpx 28rpx;
+}
+.f {
+  display: inline-block;
+  padding: 12rpx 26rpx; margin-right: 14rpx;
+  border-radius: 40rpx;
+  font-size: var(--fs-sub); color: var(--t2);
+  background: #F2F5F8;
+}
+.f.on { background: var(--brand); color: #fff; font-weight: 600; }
+
+/* ============ 空态 / 加载态 ============ */
+.empty {
+  padding: 140rpx 60rpx;
+  text-align: center; color: var(--t3);
+  font-size: var(--fs-sub); line-height: 1.9;
+}
+.empty .ic { font-size: 72rpx; margin-bottom: 20rpx; }
+.loading-more {
+  padding: 36rpx; text-align: center;
+  color: var(--t3); font-size: var(--fs-mini);
+}
+
+/* ============ 安全区 ============ */
+.safe-bottom { padding-bottom: constant(safe-area-inset-bottom); padding-bottom: env(safe-area-inset-bottom); }

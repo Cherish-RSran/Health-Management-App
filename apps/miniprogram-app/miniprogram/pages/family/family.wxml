@@ -1,0 +1,63 @@
+<!-- 家人 · 档案列表 -->
+<view class="page {{big ? 'big-mode' : ''}}">
+
+  <view wx:if="{{loading}}" class="empty">加载中…</view>
+
+  <block wx:elif="{{needFamily}}">
+    <view class="empty">还没有家庭，先去「我的」创建</view>
+  </block>
+
+  <block wx:elif="{{error}}">
+    <view class="empty">{{error}}</view>
+    <view class="btn btn-primary btn-block" bindtap="retry">重试</view>
+  </block>
+
+  <block wx:else>
+    <view class="tip">
+      每份档案的可见性由 person_access 决定。
+      <text class="tip-em">代管档案须归属人本人授权。</text>
+    </view>
+
+    <!-- 待审批提醒 -->
+    <view wx:if="{{pending.length}}" class="card card-flat notice" bindtap="onGoMe">
+      <view class="row">
+        <view class="ic" style="background:#FEF3C7;color:#B45309">待</view>
+        <view class="tx">
+          <view class="t1">有 {{pending.length}} 位成员待审批</view>
+          <view class="t2">去「我的 → 家庭管理」处理</view>
+        </view>
+        <view class="go">›</view>
+      </view>
+    </view>
+
+    <!-- 档案卡片 -->
+    <view class="pcard" wx:for="{{persons}}" wx:key="id"
+          data-id="{{item.id}}" bindtap="onPerson">
+      <view class="pcard-avatar {{item.profile_type === 'self' ? 'self' : 'managed'}}">
+        {{item.relation || item.name}}
+      </view>
+      <view class="pcard-body">
+        <view class="pcard-name">
+          {{item.name}}
+          <text class="tag {{item.profile_type === 'self' ? 'tag-md' : 'tag-short'}}">
+            {{item.profile_type === 'self' ? '本人' : '代管'}}
+          </text>
+          <text wx:if="{{item.access_level === 'none'}}" class="tag tag-grey">无权限</text>
+        </view>
+        <view class="pcard-sub">
+          {{item.gender === 'male' ? '男' : (item.gender === 'female' ? '女' : '—')}}
+          <block wx:if="{{item.age || item.age === 0}}"> · {{item.age}} 岁</block>
+          <block wx:if="{{item.blood_type}}"> · {{item.blood_type}} 型</block>
+        </view>
+      </view>
+      <view class="arrow">›</view>
+    </view>
+
+    <view wx:if="{{!persons.length}}" class="empty">
+      还没有档案<view class="muted">先给自己或家人建一份</view>
+    </view>
+
+    <view class="btn btn-primary btn-block" bindtap="onAdd">＋ 添加家庭成员</view>
+    <view class="footer-note">本产品不提供问诊、诊断、用药建议</view>
+  </block>
+</view>

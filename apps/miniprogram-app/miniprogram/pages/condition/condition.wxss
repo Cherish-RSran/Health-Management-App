@@ -1,0 +1,44 @@
+/* 病程详情 */
+
+.cond-head { padding: 28rpx 32rpx 12rpx; }
+.cond-title { font-size: 42rpx; font-weight: 700; display: flex; align-items: center; }
+.ongoing-tag {
+  margin-left: 16rpx; padding: 4rpx 16rpx; border-radius: 12rpx;
+  background: var(--warn); color: #fff; font-size: 22rpx; font-weight: 600;
+}
+.cond-sub { font-size: 24rpx; color: var(--t3); margin-top: 12rpx; line-height: 1.7; }
+
+/* 逐日 */
+.day { display: flex; position: relative; padding-bottom: 28rpx; }
+.day:last-of-type { padding-bottom: 0; }
+.day-rail {
+  width: 36rpx; flex-shrink: 0;
+  display: flex; flex-direction: column; align-items: center;
+}
+.dot {
+  width: 20rpx; height: 20rpx; border-radius: 50%; margin-top: 8rpx;
+  background: var(--brand); box-shadow: 0 0 0 6rpx var(--brand-2);
+}
+.dot.empty { background: #fff; border: 4rpx solid #E4E8ED; box-shadow: none; }
+.dot.alert { background: var(--danger); box-shadow: 0 0 0 6rpx #FDE8E8; }
+.line { flex: 1; width: 3rpx; background: var(--line); margin-top: 8rpx; }
+
+.day-body { flex: 1; min-width: 0; padding-left: 18rpx; }
+.day-date { font-size: 24rpx; font-weight: 600; color: var(--t3); display: flex; align-items: center; }
+.backfill-tag {
+  margin-left: 12rpx; padding: 1rpx 10rpx; border-radius: 8rpx;
+  background: #EEF2F7; color: #64748B; font-size: 19rpx; font-weight: 500;
+}
+.day-text { font-size: 29rpx; margin-top: 8rpx; line-height: 1.6; }
+.empty-text { color: #B6BDC6; }
+.sev { font-size: 21rpx; padding: 2rpx 12rpx; border-radius: 10rpx; margin-left: 12rpx; font-weight: 600; }
+.sev-mild { background: #FEF6E7; color: #B45309; }
+.sev-moderate { background: #FFEDE4; color: #C2410C; }
+.sev-severe { background: #FDE8E8; color: #B91C1C; }
+
+.day-ops { margin-top: 10rpx; }
+.op { font-size: 23rpx; color: var(--brand-3); margin-right: 28rpx; }
+.op.danger { color: #DC2626; }
+
+.bottom-actions { display: flex; padding: 32rpx 28rpx 60rpx; }
+.sum-btn { flex: 1.6; margin-left: 20rpx; }

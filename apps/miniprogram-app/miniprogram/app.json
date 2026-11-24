@@ -1,0 +1,35 @@
+{
+  "pages": [
+    "pages/home/home",
+    "pages/timeline/timeline",
+    "pages/family/family",
+    "pages/me/me",
+    "pages/person/person",
+    "pages/condition/condition",
+    "pages/record/record",
+    "pages/summary/summary"
+  ],
+  "window": {
+    "backgroundTextStyle": "dark",
+    "navigationBarBackgroundColor": "#FFFFFF",
+    "navigationBarTitleText": "家庭健康档案",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#F4F6F8",
+    "enablePullDownRefresh": false
+  },
+  "tabBar": {
+    "color": "#9AA3AE",
+    "selectedColor": "#0E9F6E",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "black",
+    "list": [
+      { "pagePath": "pages/home/home",         "text": "首页" },
+      { "pagePath": "pages/timeline/timeline", "text": "健康时间线" },
+      { "pagePath": "pages/family/family",     "text": "家人" },
+      { "pagePath": "pages/me/me",             "text": "我的" }
+    ]
+  },
+  "style": "v2",
+  "lazyCodeLoading": "requiredComponents",
+  "sitemapLocation": "sitemap.json"
+}

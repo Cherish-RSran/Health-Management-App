@@ -1,0 +1,79 @@
+/* 由 miniprogram/pages/record/record.wxss 自动转换 */
+/* 记录 */
+
+.steps-bar { display: flex; padding: calc(28 * var(--rpx)) calc(28 * var(--rpx)) calc(8 * var(--rpx)); }
+.step-dot {
+  flex: 1; height: calc(6 * var(--rpx)); border-radius: calc(3 * var(--rpx)); margin-right: calc(10 * var(--rpx));
+  background: #E4E8ED;
+}
+.step-dot:last-child { margin-right: 0; }
+.step-dot.on { background: var(--brand); }
+
+.tip-line {
+  padding: calc(4 * var(--rpx)) calc(32 * var(--rpx)) calc(8 * var(--rpx));
+  font-size: calc(23 * var(--rpx)); color: var(--t3); line-height: 1.7;
+}
+
+.fld { margin-bottom: calc(32 * var(--rpx)); }
+.fld:last-child { margin-bottom: calc(8 * var(--rpx)); }
+.label { font-size: calc(25 * var(--rpx)); color: var(--t3); font-weight: 600; margin-bottom: calc(14 * var(--rpx)); }
+.req { color: var(--danger); margin-left: calc(6 * var(--rpx)); }
+
+.input, .picker {
+  width: 100%; border: calc(1 * var(--rpx)) solid #E4E8ED; border-radius: calc(18 * var(--rpx));
+  padding: calc(22 * var(--rpx)) calc(24 * var(--rpx)); font-size: calc(29 * var(--rpx)); background: #fff;
+  box-sizing: border-box;
+}
+.picker.picked { border-color: var(--brand); color: var(--brand-3); font-weight: 600; }
+.mt16 { margin-top: calc(16 * var(--rpx)); }
+
+.chips { display: flex; flex-wrap: wrap; }
+.chip {
+  padding: calc(16 * var(--rpx)) calc(28 * var(--rpx)); margin: 0 calc(16 * var(--rpx)) calc(16 * var(--rpx)) 0;
+  border-radius: calc(16 * var(--rpx)); background: #F4F6F8;
+  font-size: calc(27 * var(--rpx)); color: var(--t3);
+  border: calc(2 * var(--rpx)) solid transparent;
+}
+.chip.on { background: var(--brand-2); border-color: var(--brand); color: var(--brand-3); font-weight: 600; }
+
+.hint { font-size: calc(22 * var(--rpx)); color: var(--t3); margin-top: calc(12 * var(--rpx)); line-height: 1.6; }
+
+/* 逐日 */
+.day-head {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: calc(16 * var(--rpx));
+}
+.day-date {
+  font-size: calc(29 * var(--rpx)); font-weight: 600;
+  padding: calc(6 * var(--rpx)) calc(20 * var(--rpx)); border-radius: calc(12 * var(--rpx)); background: #F2F5F8;
+}
+.day-remove { font-size: calc(23 * var(--rpx)); color: #DC2626; }
+
+.addline {
+  text-align: center; padding: calc(24 * var(--rpx));
+  font-size: calc(26 * var(--rpx)); color: var(--brand-3); font-weight: 600;
+}
+
+.bottom-actions { display: flex; padding: calc(32 * var(--rpx)) calc(28 * var(--rpx)) calc(60 * var(--rpx)); }
+.sum-btn { flex: 1.6; margin-left: calc(20 * var(--rpx)); }
+
+.detail-title {
+  font-size: calc(40 * var(--rpx)); font-weight: 700;
+  padding: calc(28 * var(--rpx)) calc(32 * var(--rpx)) calc(8 * var(--rpx));
+}
+
+/* 附件 / 报告图片网格 */
+.img-grid { display: flex; flex-wrap: wrap; margin-top: calc(16 * var(--rpx)); }
+.img-cell {
+  width: calc(160 * var(--rpx)); height: calc(160 * var(--rpx)); border-radius: calc(16 * var(--rpx));
+  margin: 0 calc(16 * var(--rpx)) calc(16 * var(--rpx)) 0; background: #F2F5F8;
+  border: calc(1 * var(--rpx)) solid var(--line);
+}
+
+/* 报告要点（人工标注）输入区 */
+.note-area {
+  width: 100%; min-height: calc(160 * var(--rpx));
+  border: calc(1 * var(--rpx)) solid #E4E8ED; border-radius: calc(18 * var(--rpx));
+  padding: calc(22 * var(--rpx)) calc(24 * var(--rpx)); font-size: calc(28 * var(--rpx)); background: #fff;
+  box-sizing: border-box; margin-top: calc(18 * var(--rpx));
+}

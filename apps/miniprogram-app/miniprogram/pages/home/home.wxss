@@ -1,0 +1,143 @@
+/* 首页 */
+
+.hero {
+  padding: 8rpx 28rpx 12rpx;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.hero .fam { font-size: 40rpx; font-weight: 700; letter-spacing: -.5rpx; }
+.hero .sub { font-size: 24rpx; color: var(--t3); margin-top: 6rpx; }
+.invite {
+  padding: 14rpx 26rpx; border-radius: 40rpx;
+  background: var(--brand-2); color: var(--brand-3);
+  font-size: 25rpx; font-weight: 600;
+}
+.hero-actions { display: flex; align-items: center; flex-shrink: 0; }
+.big-toggle {
+  padding: 14rpx 24rpx; border-radius: 40rpx; margin-right: 16rpx;
+  background: #EEF0FF; color: #4F46E5;
+  font-size: 25rpx; font-weight: 600;
+}
+.big-toggle.on { background: #4F46E5; color: #fff; }
+
+/* 成员横条 */
+.avatars { white-space: nowrap; padding: 20rpx 28rpx 8rpx; }
+.av { display: inline-block; width: 116rpx; text-align: center; vertical-align: top; }
+.av .b {
+  width: 96rpx; height: 96rpx; border-radius: 50%; margin: 0 auto;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 28rpx; font-weight: 600;
+  overflow: hidden; white-space: nowrap;
+  padding: 0 6rpx; box-sizing: border-box;
+}
+.av .n {
+  font-size: 23rpx; color: var(--t2); margin-top: 10rpx;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.av-empty { display: inline-block; font-size: 24rpx; color: var(--t3); padding: 30rpx 0; }
+
+/* 待审批提醒 */
+.notice { background: #FFFBEB; }
+
+/* 用药 */
+.med-person { padding: 8rpx 0 12rpx; }
+.med-person + .med-person { border-top: 1rpx solid var(--line); }
+.med-person .ph { margin-bottom: 12rpx; }
+.med-person .ph .bold { font-size: 28rpx; margin-right: 12rpx; }
+.slot { display: flex; align-items: flex-start; padding: 6rpx 0; }
+.slot-tag {
+  width: 44rpx; height: 44rpx; border-radius: 14rpx; flex-shrink: 0;
+  background: var(--brand-2); color: var(--brand-3);
+  font-size: 23rpx; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  margin-right: 18rpx;
+}
+.slot-tag.slot-now {
+  background: var(--brand); color: #fff;
+  box-shadow: 0 2rpx 8rpx rgba(14,159,110,.35);
+}
+.pills { display: flex; flex-wrap: wrap; flex: 1; }
+.pill {
+  display: inline-flex; align-items: center; flex-wrap: wrap;
+  padding: 8rpx 18rpx; margin: 0 12rpx 12rpx 0;
+  border-radius: 14rpx; background: #F7F9FB;
+  border: 1rpx solid var(--line);
+  font-size: 25rpx;
+}
+.pill.taken {
+  background: #E7F6F0; border-color: #9FE3C7; color: #0B8057;
+  text-decoration: line-through; text-decoration-color: #0B8057;
+}
+.pill-check {
+  color: #0B8057; font-weight: 700; margin-right: 8rpx;
+  text-decoration: none;
+}
+.pill-spec { color: var(--t3); font-size: 22rpx; margin-left: 8rpx; }
+.pill .tag-short { margin-left: 8rpx; }
+.pill-hint {
+  flex-basis: 100%; margin-top: 6rpx;
+  font-size: 21rpx; color: #B45309; line-height: 1.5;
+}
+
+/* 待办 */
+.todo { display: flex; align-items: center; padding: 20rpx 0; }
+.todo + .todo { border-top: 1rpx solid var(--line); }
+.todo .dot { width: 14rpx; height: 14rpx; border-radius: 50%; flex-shrink: 0; margin-right: 18rpx; }
+.urgency-overdue { background: var(--danger); }
+.urgency-today { background: var(--warn); }
+.urgency-soon { background: var(--warn); }
+.urgency-normal { background: #CBD5E1; }
+.urgency-done { background: var(--success); }
+.todo .tx { flex: 1; min-width: 0; }
+.todo .tx .t1 { font-size: 27rpx; }
+.todo .tx .t1.done { text-decoration: line-through; color: var(--t3); }
+.todo .tx .t2 { font-size: 22rpx; color: var(--t3); margin-top: 6rpx; }
+.todo-act {
+  width: 48rpx; height: 48rpx; border-radius: 50%;
+  border: 2rpx solid #D8DEE6; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--t3); font-size: 26rpx;
+}
+.todo-act.on { background: var(--brand); border-color: var(--brand); color: #fff; }
+
+/* 紧急卡 */
+.emg-row {
+  display: flex; align-items: center;
+  background: linear-gradient(140deg, #fff, #FFF7F7);
+  border: 2rpx solid #FBD5D5;
+}
+/* 注意：这张卡没有用 .row，所以 .row .ic 的 margin-right 不会生效，必须自己补 */
+.emg-ic { background: #FDE8E8; color: #B91C1C; margin-right: 22rpx; }
+.emg-row .tx { flex: 1; min-width: 0; }
+.emg-row .tx .t1 { font-size: 29rpx; font-weight: 600; }
+.emg-row .tx .t2 { font-size: 23rpx; color: #C97B7B; margin-top: 6rpx; }
+
+/* 快捷操作 */
+.quick-grid { display: flex; flex-wrap: wrap; }
+.quick-item {
+  padding: 16rpx 26rpx; margin: 0 16rpx 16rpx 0;
+  border-radius: 18rpx; background: #F4F6F8;
+  font-size: 26rpx; color: var(--t2);
+}
+
+/* 排序模式 */
+.sort-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  margin: 20rpx 28rpx -8rpx; padding: 12rpx 20rpx;
+  background: #FFF7ED; border-radius: 16rpx;
+  border: 2rpx dashed #FDBA74;
+}
+.sort-label { font-size: 24rpx; color: #B45309; font-weight: 600; }
+.sort-btns { display: flex; }
+.sort-btn {
+  width: 60rpx; height: 56rpx; margin-left: 12rpx;
+  border-radius: 12rpx; background: #fff; border: 2rpx solid #FDBA74;
+  color: #B45309; font-size: 28rpx;
+  display: flex; align-items: center; justify-content: center;
+}
+.sort-save { margin-top: 32rpx; }
+.sort-hint { text-align: center; font-size: 22rpx; color: #C3CAD3; padding: 24rpx 0 0; }
+
+.footer-note {
+  text-align: center; font-size: 21rpx; color: #C3CAD3;
+  padding: 36rpx 52rpx 20rpx; line-height: 1.8;
+}

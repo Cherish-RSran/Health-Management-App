@@ -1,0 +1,35 @@
+/* 由 miniprogram/pages/family/family.wxss 自动转换 */
+/* 家人 */
+
+.tip {
+  padding: calc(20 * var(--rpx)) calc(32 * var(--rpx)) calc(8 * var(--rpx));
+  font-size: calc(23 * var(--rpx)); color: var(--t3); line-height: 1.7;
+}
+.tip-em { color: #B45309; }
+
+.notice { background: #FFFBEB; }
+
+.pcard {
+  display: flex; align-items: center;
+  background: var(--card); border-radius: calc(24 * var(--rpx));
+  margin: calc(20 * var(--rpx)) calc(28 * var(--rpx)); padding: calc(26 * var(--rpx));
+}
+.pcard-avatar {
+  width: calc(96 * var(--rpx)); height: calc(96 * var(--rpx)); border-radius: calc(28 * var(--rpx)); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: calc(28 * var(--rpx)); font-weight: 600;
+  margin-right: calc(24 * var(--rpx)); overflow: hidden;
+  padding: 0 calc(8 * var(--rpx)); box-sizing: border-box;
+}
+.pcard-avatar.self { background: var(--brand); }
+.pcard-avatar.managed { background: #3B82F6; }
+.pcard-body { flex: 1; min-width: 0; }
+.pcard-name { font-size: calc(31 * var(--rpx)); font-weight: 600; }
+.pcard-name .tag { margin-left: calc(12 * var(--rpx)); }
+.pcard-sub { font-size: calc(24 * var(--rpx)); color: var(--t3); margin-top: calc(8 * var(--rpx)); }
+.pcard .arrow { color: #CBD2DA; font-size: calc(32 * var(--rpx)); margin-left: calc(12 * var(--rpx)); }
+
+.footer-note {
+  text-align: center; font-size: calc(21 * var(--rpx)); color: #C3CAD3;
+  padding: calc(36 * var(--rpx)) calc(52 * var(--rpx)) calc(20 * var(--rpx)); line-height: 1.8;
+}

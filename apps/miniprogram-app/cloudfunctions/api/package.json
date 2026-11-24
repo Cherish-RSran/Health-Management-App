@@ -1,0 +1,10 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "description": "家庭健康档案 · 统一服务端（单一云函数 + action 路由）",
+  "main": "index.js",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

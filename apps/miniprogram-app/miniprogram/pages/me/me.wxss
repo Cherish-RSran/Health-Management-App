@@ -1,0 +1,84 @@
+/* 我的 */
+
+.profile { display: flex; align-items: center; }
+.avatar {
+  width: 108rpx; height: 108rpx; border-radius: 50%; flex-shrink: 0;
+  background: var(--brand); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 30rpx; font-weight: 600; margin-right: 26rpx;
+  overflow: hidden; padding: 0 8rpx; box-sizing: border-box;
+}
+.p-name { font-size: 32rpx; font-weight: 600; }
+.p-name .tag { margin-left: 12rpx; }
+.p-sub { font-size: 24rpx; color: var(--t3); margin-top: 8rpx; }
+.profile .go { color: #CBD2DA; font-size: 32rpx; }
+
+.invite-row {
+  display: flex; align-items: center; padding: 12rpx 0 20rpx;
+}
+.code {
+  font-size: 46rpx; font-weight: 700; letter-spacing: 8rpx;
+  color: var(--brand-3); flex: 1;
+}
+
+.sub-label {
+  font-size: 23rpx; color: var(--t3); font-weight: 600;
+  padding: 24rpx 0 8rpx;
+}
+
+.pend {
+  display: flex; align-items: center; padding: 20rpx 0;
+  border-top: 1rpx solid var(--line);
+}
+.pend .t1 { font-size: 28rpx; }
+.pend .t2 { font-size: 23rpx; color: var(--t3); margin-top: 6rpx; }
+.pend .mini-btn { margin-left: 12rpx; }
+
+/* 小按钮（复制 / 刷新 / 移除 / 同意 / 拒绝）
+   之前 wxml 里用了 mini-btn 这类名，但 wxss 里一直没写规则，
+   按钮渲染出来是裸文本、看不出可点，这里补上 */
+.mini-btn {
+  display: flex; align-items: center; justify-content: center;
+  padding: 10rpx 24rpx; border-radius: 14rpx;
+  font-size: 24rpx; line-height: 1.4; flex-shrink: 0;
+}
+.mini-btn.no { background: #F2F5F8; color: var(--t2); }
+.mini-btn.ok { background: var(--brand); color: #fff; }
+
+.perm-note {
+  font-size: 22rpx; color: var(--t3); line-height: 1.8;
+  padding: 24rpx 0 8rpx; border-top: 1rpx solid var(--line); margin-top: 20rpx;
+}
+
+/* 开关 */
+.switch {
+  width: 92rpx; height: 54rpx; border-radius: 30rpx;
+  background: #DFE4EA; position: relative; flex-shrink: 0;
+}
+.switch.on { background: var(--brand); }
+.knob {
+  position: absolute; top: 5rpx; left: 5rpx;
+  width: 44rpx; height: 44rpx; border-radius: 50%;
+  background: #fff; box-shadow: 0 2rpx 6rpx rgba(0,0,0,.18);
+  transition: left .2s;
+}
+.switch.on .knob { left: 43rpx; }
+
+/* 动态 */
+.logitem {
+  display: flex; align-items: flex-start;
+  padding: 18rpx 0; border-top: 1rpx solid var(--line);
+}
+.log-ic {
+  width: 60rpx; height: 60rpx; border-radius: 16rpx; flex-shrink: 0;
+  background: #EAF1FF; color: #1D4ED8;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 21rpx; font-weight: 600; margin-right: 20rpx;
+}
+.log-line { font-size: 26rpx; }
+.log-at { font-size: 21rpx; color: var(--t3); margin-top: 6rpx; }
+
+.footer-note {
+  text-align: center; font-size: 21rpx; color: #C3CAD3;
+  padding: 36rpx 52rpx 40rpx; line-height: 1.8;
+}

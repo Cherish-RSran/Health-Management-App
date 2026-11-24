@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "病程详情（短期）",
+  "usingComponents": {
+    "form-sheet": "/components/form-sheet/form-sheet"
+  }
+}

@@ -1,0 +1,86 @@
+/* 由 miniprogram/pages/person/person.wxss 自动转换 */
+/* 健康档案 */
+
+.head {
+  display: flex; align-items: center;
+  padding: calc(28 * var(--rpx)) calc(32 * var(--rpx)) calc(20 * var(--rpx));
+}
+.head-avatar {
+  width: calc(112 * var(--rpx)); height: calc(112 * var(--rpx)); border-radius: calc(32 * var(--rpx)); flex-shrink: 0;
+  background: #3B82F6; color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: calc(30 * var(--rpx)); font-weight: 600; margin-right: calc(26 * var(--rpx));
+  overflow: hidden; padding: 0 calc(8 * var(--rpx)); box-sizing: border-box;
+}
+.head-name { font-size: calc(38 * var(--rpx)); font-weight: 700; }
+.head-name .tag { margin-left: calc(12 * var(--rpx)); font-weight: 500; }
+.head-sub { font-size: calc(25 * var(--rpx)); color: var(--t3); margin-top: calc(8 * var(--rpx)); }
+.edit-btn {
+  padding: calc(12 * var(--rpx)) calc(24 * var(--rpx)); border-radius: calc(16 * var(--rpx));
+  background: #F2F5F8; color: var(--t2); font-size: calc(25 * var(--rpx));
+  flex-shrink: 0;
+}
+
+.auth-note { background: #FFFBEB; }
+.auth-title { font-size: calc(27 * var(--rpx)); font-weight: 600; color: #B45309; }
+.auth-body { font-size: calc(24 * var(--rpx)); color: #92400E; margin-top: calc(10 * var(--rpx)); line-height: 1.7; }
+
+.card.block { padding-bottom: calc(8 * var(--rpx)); }
+.danger-bar { background: #B91C1C; }
+
+.item {
+  display: flex; align-items: flex-start;
+  padding: calc(20 * var(--rpx)) 0; border-top: calc(1 * var(--rpx)) solid var(--line);
+}
+.item-k {
+  width: calc(170 * var(--rpx)); flex-shrink: 0;
+  font-size: calc(24 * var(--rpx)); color: var(--t3);
+}
+.item-v { flex: 1; font-size: calc(28 * var(--rpx)); line-height: 1.6; }
+.item-v.danger { color: #B91C1C; }
+.item-v .period { font-size: calc(22 * var(--rpx)); color: var(--t3); margin-top: calc(6 * var(--rpx)); }
+.item-v .period.short { color: #B45309; font-weight: 600; }
+.item-v .med-extra { font-size: calc(22 * var(--rpx)); color: var(--t3); margin-top: calc(6 * var(--rpx)); }
+.item-v .med-extra.warn { color: #B45309; font-weight: 600; }
+
+/* 共享权限卡片 */
+.acc { display: flex; align-items: center; justify-content: space-between; padding: calc(18 * var(--rpx)) 0; border-bottom: calc(1 * var(--rpx)) solid var(--line); }
+.acc:last-child { border-bottom: none; }
+.acc-name { font-size: calc(27 * var(--rpx)); color: var(--text); flex: 1; }
+.acc-levels { display: flex; }
+.acc-levels .lv {
+  padding: calc(10 * var(--rpx)) calc(22 * var(--rpx)); margin-left: calc(12 * var(--rpx));
+  border-radius: calc(14 * var(--rpx)); background: #F4F6F8;
+  font-size: calc(24 * var(--rpx)); color: var(--t3);
+  border: calc(2 * var(--rpx)) solid transparent;
+}
+.acc-levels .lv.on { background: var(--brand-2); border-color: var(--brand); color: var(--brand-3); font-weight: 600; }
+.item-v .call {
+  float: right; color: var(--brand-3); font-size: calc(24 * var(--rpx));
+  padding: calc(2 * var(--rpx)) calc(16 * var(--rpx)); border: calc(1 * var(--rpx)) solid var(--brand-2);
+  border-radius: calc(12 * var(--rpx));
+}
+.pad { padding: calc(20 * var(--rpx)) 0; }
+
+/* 紧急信息卡 */
+.emergency-toggle {
+  background: linear-gradient(140deg, #fff, #FFF7F7);
+  border: calc(2 * var(--rpx)) solid #FBD5D5;
+}
+.emg-title { font-size: calc(29 * var(--rpx)); font-weight: 600; color: #B91C1C; margin-bottom: calc(8 * var(--rpx)); }
+
+.emg-card { border: calc(2 * var(--rpx)) solid #FBD5D5; }
+.emg-name { font-size: calc(38 * var(--rpx)); font-weight: 700; margin-bottom: calc(8 * var(--rpx)); }
+.emg-line {
+  display: flex; padding: calc(18 * var(--rpx)) 0;
+  border-top: calc(1 * var(--rpx)) solid #FBE3E3; font-size: calc(28 * var(--rpx));
+}
+.emg-k { width: calc(150 * var(--rpx)); flex-shrink: 0; color: #C97B7B; font-size: calc(24 * var(--rpx)); }
+.emg-v { flex: 1; }
+.emg-v.danger { color: #B91C1C; font-weight: 600; }
+.emg-note { font-size: calc(21 * var(--rpx)); color: #C97B7B; padding-top: calc(20 * var(--rpx)); line-height: 1.7; }
+
+.bottom-actions {
+  display: flex; padding: calc(32 * var(--rpx)) calc(28 * var(--rpx)) calc(60 * var(--rpx));
+}
+.sum-btn { flex: 1.6; margin-left: calc(20 * var(--rpx)); }

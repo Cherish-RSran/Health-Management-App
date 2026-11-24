@@ -1,0 +1,152 @@
+<!-- 记录：补记 / 就诊 / 检查 / 疫苗 / 待办 / 详情 -->
+<view class="page {{big ? 'big-mode' : ''}}">
+
+  <!-- 加载 / 错误 -->
+  <view wx:if="{{loading}}" class="empty">加载中…</view>
+  <block wx:elif="{{error}}">
+    <view class="empty">{{error}}</view>
+  </block>
+
+  <!-- ============ 详情模式 ============ -->
+  <block wx:elif="{{mode === 'detail'}}">
+    <view class="detail-title">{{detail.title}}</view>
+    <view class="card">
+      <view class="kv" wx:for="{{detail.rows}}" wx:key="k">
+        <view class="k">{{item.k}}</view>
+        <view class="v">{{item.v}}</view>
+      </view>
+    </view>
+
+    <view wx:if="{{detail.files && detail.files.length}}" class="card">
+      <view class="sec-title"><view class="h"><view class="bar"></view>附件 / 报告图片</view></view>
+      <view class="img-grid">
+        <image wx:for="{{detail.files}}" wx:key="id" class="img-cell"
+               mode="aspectFill" src="{{item.url}}" data-url="{{item.url}}"
+               bindtap="onPreviewImage" />
+      </view>
+      <view class="hint">点击图片可放大查看</view>
+    </view>
+
+    <!-- 报告要点（人工标注）：系统不自动解读，由本人填写关键结论 -->
+    <block wx:if="{{detailType === 'exam' || detailType === 'visit'}}">
+      <view class="card">
+        <view class="sec-title"><view class="h"><view class="bar"></view>报告要点（人工标注）</view></view>
+        <view class="muted">系统不自动解读报告图片。把你或医生确认过的关键结论写在这里，就诊时一眼就能看到。</view>
+        <textarea class="note-area" value="{{noteDraft}}" bindinput="onNoteInput"
+                  placeholder="如「肺纹理增粗，建议 1 个月后复查」" maxlength="200" />
+        <view class="addline" bindtap="onSaveNote">保存要点</view>
+      </view>
+    </block>
+
+    <view class="bottom-actions">
+      <view class="btn btn-plain flex1" bindtap="onDeleteDetail">删除这条记录</view>
+    </view>
+  </block>
+
+  <!-- ============ 补记（3 步） ============ -->
+  <block wx:elif="{{!mode && rec.step === 1}}">
+    <view class="steps-bar">
+      <view class="step-dot on"></view><view class="step-dot"></view><view class="step-dot"></view>
+    </view>
+    <view class="card">
+      <view class="label">这是补记入口</view>
+      <view class="muted">用于记录已经发生、但当时没空记的病情。开始日期可回溯到过去任意一天；系统会把「实际发生时间」和「本次补录时间」分开保存，不会弄乱时间线顺序。</view>
+    </view>
+    <view class="card">
+      <view class="fld">
+        <view class="label">给谁记</view>
+        <view class="chips">
+          <view class="chip {{rec.person_id === item.id ? 'on' : ''}}"
+                wx:for="{{persons}}" wx:key="id"
+                data-id="{{item.id}}" bindtap="onPickPerson">{{item.name}}</view>
+        </view>
+      </view>
+      <view class="fld">
+        <view class="label">症状 / 病程名称</view>
+        <view class="chips">
+          <view class="chip {{rec.title === item ? 'on' : ''}}"
+                wx:for="{{symptoms}}" wx:key="*this"
+                data-v="{{item}}" bindtap="onPickSymptom">{{item}}</view>
+        </view>
+      </view>
+      <view class="fld">
+        <view class="label">开始日期（可回溯）</view>
+        <picker mode="date" value="{{rec.start_date}}" bindchange="onStartDate">
+          <view class="picker">{{rec.start_date}}</view>
+        </picker>
+        <view class="hint">补记模式：实际发生时间与补录时间会分开保存</view>
+      </view>
+    </view>
+    <view class="bottom-actions">
+      <view class="btn btn-primary flex1" bindtap="nextStep">下一步</view>
+    </view>
+  </block>
+
+  <block wx:elif="{{!mode && rec.step === 2}}">
+    <view class="steps-bar">
+      <view class="step-dot on"></view><view class="step-dot on"></view><view class="step-dot"></view>
+    </view>
+    <view class="tip-line">一次把几天补完 · 允许某天留空（空也是有价值的信息）</view>
+    <view class="card" wx:for="{{rec.days}}" wx:key="date" wx:for-item="day" wx:for-index="i">
+      <view class="day-head">
+        <picker mode="date" value="{{day.date}}" data-i="{{i}}" bindchange="onDayDate">
+          <view class="day-date">{{day.d}}</view>
+        </picker>
+        <view class="day-remove" wx:if="{{rec.days.length > 1}}" data-i="{{i}}" bindtap="removeDay">删除</view>
+      </view>
+      <input class="input" placeholder="症状（如 咳嗽 轻 / 无）" value="{{day.s}}"
+             data-i="{{i}}" data-k="s" bindinput="onDayInput" />
+      <input class="input mt16" placeholder="用药 / 体温 / 备注" value="{{day.m}}"
+             data-i="{{i}}" data-k="m" bindinput="onDayInput" />
+    </view>
+    <view class="addline" bindtap="addDay">＋ 添加一天</view>
+    <view class="bottom-actions">
+      <view class="btn btn-ghost flex1" bindtap="prevStep">上一步</view>
+      <view class="btn btn-primary sum-btn" bindtap="nextStep">下一步</view>
+    </view>
+  </block>
+
+  <block wx:elif="{{!mode && rec.step === 3}}">
+    <view class="steps-bar">
+      <view class="step-dot on"></view><view class="step-dot on"></view><view class="step-dot on"></view>
+    </view>
+    <view class="card">
+      <view class="fld">
+        <view class="label">本次病程状态</view>
+        <view class="chips">
+          <view class="chip {{rec.ended === false ? 'on' : ''}}" data-v="0" bindtap="onEnded">还在继续</view>
+          <view class="chip {{rec.ended === true ? 'on' : ''}}" data-v="1" bindtap="onEnded">已结束</view>
+        </view>
+      </view>
+      <view class="kv"><view class="k">病程</view><view class="v">{{rec.title}}</view></view>
+      <view class="kv"><view class="k">开始</view><view class="v">{{rec.start_date}}</view></view>
+      <view class="kv"><view class="k">记录</view><view class="v">{{rec.days.length}} 天</view></view>
+      <view class="kv"><view class="k">状态</view>
+        <view class="v">{{rec.ended === null ? '未选择' : (rec.ended ? '已结束' : '进行中')}}</view></view>
+    </view>
+    <view class="bottom-actions">
+      <view class="btn btn-ghost flex1" bindtap="prevStep">上一步</view>
+      <view class="btn btn-primary sum-btn" bindtap="submitBackfill">保存补记</view>
+    </view>
+  </block>
+
+  <!-- ============ 其他模式：先选人，再填表 ============ -->
+  <block wx:elif="{{mode}}">
+    <view class="card">
+      <view class="fld">
+        <view class="label">给谁记<text class="req">*</text></view>
+        <view class="picker {{form.values.pid ? 'picked' : ''}}" bindtap="onPickTarget">
+          {{form.values._name ? '已选择：' + form.values._name + '（点击更换）' : '点击选择成员'}}
+        </view>
+        <view class="hint">选择成员后会弹出「{{form.title}}」表单</view>
+      </view>
+    </view>
+    <view class="empty">先选择成员，再填写记录内容</view>
+  </block>
+
+  <!-- 通用表单弹层 -->
+  <form-sheet show="{{form.show}}" title="{{form.title}}" tip="{{form.tip}}"
+              submit-text="{{form.submitText}}"
+              fields="{{form.fields}}" values="{{form.values}}"
+              bind:submit="onFormSubmit" bind:cancel="onFormCancel" />
+</view>

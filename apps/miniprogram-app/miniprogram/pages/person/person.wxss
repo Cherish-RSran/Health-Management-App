@@ -1,0 +1,85 @@
+/* 健康档案 */
+
+.head {
+  display: flex; align-items: center;
+  padding: 28rpx 32rpx 20rpx;
+}
+.head-avatar {
+  width: 112rpx; height: 112rpx; border-radius: 32rpx; flex-shrink: 0;
+  background: #3B82F6; color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 30rpx; font-weight: 600; margin-right: 26rpx;
+  overflow: hidden; padding: 0 8rpx; box-sizing: border-box;
+}
+.head-name { font-size: 38rpx; font-weight: 700; }
+.head-name .tag { margin-left: 12rpx; font-weight: 500; }
+.head-sub { font-size: 25rpx; color: var(--t3); margin-top: 8rpx; }
+.edit-btn {
+  padding: 12rpx 24rpx; border-radius: 16rpx;
+  background: #F2F5F8; color: var(--t2); font-size: 25rpx;
+  flex-shrink: 0;
+}
+
+.auth-note { background: #FFFBEB; }
+.auth-title { font-size: 27rpx; font-weight: 600; color: #B45309; }
+.auth-body { font-size: 24rpx; color: #92400E; margin-top: 10rpx; line-height: 1.7; }
+
+.card.block { padding-bottom: 8rpx; }
+.danger-bar { background: #B91C1C; }
+
+.item {
+  display: flex; align-items: flex-start;
+  padding: 20rpx 0; border-top: 1rpx solid var(--line);
+}
+.item-k {
+  width: 170rpx; flex-shrink: 0;
+  font-size: 24rpx; color: var(--t3);
+}
+.item-v { flex: 1; font-size: 28rpx; line-height: 1.6; }
+.item-v.danger { color: #B91C1C; }
+.item-v .period { font-size: 22rpx; color: var(--t3); margin-top: 6rpx; }
+.item-v .period.short { color: #B45309; font-weight: 600; }
+.item-v .med-extra { font-size: 22rpx; color: var(--t3); margin-top: 6rpx; }
+.item-v .med-extra.warn { color: #B45309; font-weight: 600; }
+
+/* 共享权限卡片 */
+.acc { display: flex; align-items: center; justify-content: space-between; padding: 18rpx 0; border-bottom: 1rpx solid var(--line); }
+.acc:last-child { border-bottom: none; }
+.acc-name { font-size: 27rpx; color: var(--text); flex: 1; }
+.acc-levels { display: flex; }
+.acc-levels .lv {
+  padding: 10rpx 22rpx; margin-left: 12rpx;
+  border-radius: 14rpx; background: #F4F6F8;
+  font-size: 24rpx; color: var(--t3);
+  border: 2rpx solid transparent;
+}
+.acc-levels .lv.on { background: var(--brand-2); border-color: var(--brand); color: var(--brand-3); font-weight: 600; }
+.item-v .call {
+  float: right; color: var(--brand-3); font-size: 24rpx;
+  padding: 2rpx 16rpx; border: 1rpx solid var(--brand-2);
+  border-radius: 12rpx;
+}
+.pad { padding: 20rpx 0; }
+
+/* 紧急信息卡 */
+.emergency-toggle {
+  background: linear-gradient(140deg, #fff, #FFF7F7);
+  border: 2rpx solid #FBD5D5;
+}
+.emg-title { font-size: 29rpx; font-weight: 600; color: #B91C1C; margin-bottom: 8rpx; }
+
+.emg-card { border: 2rpx solid #FBD5D5; }
+.emg-name { font-size: 38rpx; font-weight: 700; margin-bottom: 8rpx; }
+.emg-line {
+  display: flex; padding: 18rpx 0;
+  border-top: 1rpx solid #FBE3E3; font-size: 28rpx;
+}
+.emg-k { width: 150rpx; flex-shrink: 0; color: #C97B7B; font-size: 24rpx; }
+.emg-v { flex: 1; }
+.emg-v.danger { color: #B91C1C; font-weight: 600; }
+.emg-note { font-size: 21rpx; color: #C97B7B; padding-top: 20rpx; line-height: 1.7; }
+
+.bottom-actions {
+  display: flex; padding: 32rpx 28rpx 60rpx;
+}
+.sum-btn { flex: 1.6; margin-left: 20rpx; }

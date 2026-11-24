@@ -1,0 +1,22 @@
+{
+  "name": "family-health-record",
+  "version": "1.0.0",
+  "private": true,
+  "description": "家庭健康档案小程序 · 工程与自动化部署工具链",
+  "license": "UNLICENSED",
+  "scripts": {
+    "check": "node scripts/check-project.js",
+    "sync": "node scripts/sync-shared.js",
+    "deploy:check": "node scripts/deploy/index.js --check",
+    "deploy:db": "node scripts/deploy/index.js --only=db",
+    "deploy:fn": "node scripts/deploy/index.js --only=fn",
+    "deploy:upload": "node scripts/deploy/index.js --only=upload",
+    "deploy": "node scripts/deploy/index.js",
+    "deploy:setup": "node scripts/deploy/setup.js",
+    "deploy:show": "node scripts/deploy/setup.js --show"
+  },
+  "devDependencies": {
+    "@cloudbase/manager-node": "^5.9.0",
+    "miniprogram-ci": "^2.1.31"
+  }
+}

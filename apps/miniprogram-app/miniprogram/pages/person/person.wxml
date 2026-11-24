@@ -1,0 +1,220 @@
+<!-- 健康档案 -->
+<view class="page {{big ? 'big-mode' : ''}}">
+
+  <view wx:if="{{loading}}" class="empty">加载中…</view>
+
+  <block wx:elif="{{error}}">
+    <view class="empty">{{error}}</view>
+    <view class="btn btn-primary btn-block" bindtap="retry">重试</view>
+  </block>
+
+  <block wx:elif="{{person}}">
+    <!-- 头部 -->
+    <view class="head">
+      <view class="head-avatar">{{person.relation || person.name}}</view>
+      <view class="flex1">
+        <view class="head-name">
+          {{person.name}}
+          <text class="tag {{person.profile_type === 'self' ? 'tag-md' : 'tag-short'}}">
+            {{person.profile_type === 'self' ? '本人档案' : '代管档案'}}
+          </text>
+        </view>
+        <view class="head-sub">
+          {{person.gender === 'male' ? '男' : (person.gender === 'female' ? '女' : '—')}}
+          <block wx:if="{{person.age || person.age === 0}}"> · {{person.age}} 岁</block>
+          <block wx:if="{{person.blood_type}}"> · {{person.blood_type}} 型</block>
+        </view>
+      </view>
+      <view class="edit-btn" bindtap="openPersonForm">编辑</view>
+    </view>
+
+    <!-- 代管授权 -->
+    <view wx:if="{{person.profile_type === 'managed'}}" class="card auth-note">
+      <view class="auth-title">代管授权</view>
+      <view class="auth-body">
+        {{person.consent_note || '未记录授权说明'}}
+        <view class="muted">《个人信息保护法》第 29 条：处理敏感个人信息须取得单独同意</view>
+      </view>
+    </view>
+
+    <!-- 过敏史 -->
+    <view class="card block">
+      <view class="sec-title">
+        <view class="h"><view class="bar danger-bar"></view>过敏史</view>
+        <view class="more">{{archives.allergy.length}} 条</view>
+      </view>
+      <view class="item" wx:for="{{archives.allergy}}" wx:key="id"
+            data-type="allergy" data-id="{{item.id}}" data-name="{{item.allergen}}"
+            bindlongpress="onItemLongPress">
+        <view class="item-k">{{item.allergen}}</view>
+        <view class="item-v danger">
+          {{item.allergen_type === 'drug' ? '药物' : (item.allergen_type === 'food' ? '食物' : '其他')}}
+          · {{item.severity === 'severe' ? '严重' : (item.severity === 'moderate' ? '中等' : (item.severity === 'mild' ? '轻微' : '未知'))}}
+          <block wx:if="{{item.reaction}}"> · {{item.reaction}}</block>
+        </view>
+      </view>
+      <view wx:if="{{!archives.allergy.length}}" class="muted pad">暂无记录</view>
+      <view class="addline" data-type="allergy" bindtap="onAddItem">＋ 添加</view>
+    </view>
+
+    <!-- 基础病（长期病）：会一直带着，已愈的不进医生摘要 -->
+    <view class="card block">
+      <view class="sec-title">
+        <view class="h"><view class="bar"></view>基础病（长期）</view>
+        <view class="more">{{archives.chronic.length}} 条</view>
+      </view>
+      <view class="item" wx:for="{{archives.chronic}}" wx:key="id"
+            data-type="chronic" data-id="{{item.id}}" data-name="{{item.name}}"
+            bindlongpress="onItemLongPress">
+        <view class="item-k">{{item.diagnosed_date || '—'}}</view>
+        <view class="item-v">
+          {{item.name}}
+          <text wx:if="{{item.status === 'cured'}}" class="tag tag-grey">已愈</text>
+        </view>
+      </view>
+      <view wx:if="{{!archives.chronic.length}}" class="muted pad">暂无记录</view>
+      <view class="addline" data-type="chronic" bindtap="onAddItem">＋ 添加</view>
+    </view>
+
+    <!-- 用药 -->
+    <view class="card block">
+      <view class="sec-title">
+        <view class="h"><view class="bar"></view>用药</view>
+        <view class="more">在服 {{medSummary.active}} 种</view>
+      </view>
+      <view class="item" wx:for="{{archives.medicine}}" wx:key="id"
+            data-type="medicine" data-id="{{item.id}}" data-name="{{item.name}}"
+            bindlongpress="onItemLongPress">
+        <view class="item-k">{{item.time_slots && item.time_slots.length ? '' : '—'}}
+          <text wx:for="{{item.time_slots}}" wx:key="*this" wx:for-item="s">{{s === 'morning' ? '早' : (s === 'noon' ? '中' : (s === 'evening' ? '晚' : '睡前'))}}</text>
+        </view>
+        <view class="item-v">
+          <text class="bold">{{item.name}}</text>
+          <text wx:if="{{item.for_disease}}" class="muted">（{{item.for_disease}}）</text>
+          <text class="muted"> {{item.spec}}{{item.dosage ? ' · ' + item.dosage : ''}} · {{item.frequency}}</text>
+          <view class="period {{item.is_long_term ? '' : 'short'}}">{{item.period_text}}</view>
+          <view wx:if="{{item.remaining !== null && item.remaining !== undefined && item.remaining !== ''}}" class="med-extra">剩 {{item.remaining}}</view>
+          <view wx:if="{{item.refill_at_label}}" class="med-extra warn">续方 / 复诊 {{item.refill_at_label}}</view>
+        </view>
+      </view>
+      <view wx:if="{{!archives.medicine.length}}" class="muted pad">暂无记录</view>
+      <view class="addline" data-type="medicine" bindtap="onAddItem">＋ 添加用药</view>
+    </view>
+
+    <!-- 手术史 -->
+    <view class="card block">
+      <view class="sec-title">
+        <view class="h"><view class="bar"></view>手术史</view>
+        <view class="more">{{archives.surgery.length}} 条</view>
+      </view>
+      <view class="item" wx:for="{{archives.surgery}}" wx:key="id"
+            data-type="surgery" data-id="{{item.id}}" data-name="{{item.name}}"
+            bindlongpress="onItemLongPress">
+        <view class="item-k">{{item.surgery_date || '—'}}</view>
+        <view class="item-v">{{item.name}}
+          <block wx:if="{{item.hospital}}"><text class="muted"> · {{item.hospital}}</text></block>
+        </view>
+      </view>
+      <view wx:if="{{!archives.surgery.length}}" class="muted pad">暂无记录</view>
+      <view class="addline" data-type="surgery" bindtap="onAddItem">＋ 添加</view>
+    </view>
+
+    <!-- 紧急联系人 -->
+    <view class="card block">
+      <view class="sec-title">
+        <view class="h"><view class="bar"></view>紧急联系人</view>
+        <view class="more">{{archives.contact.length}} 人</view>
+      </view>
+      <view class="item" wx:for="{{archives.contact}}" wx:key="id"
+            data-type="contact" data-id="{{item.id}}" data-name="{{item.name}}"
+            bindlongpress="onItemLongPress">
+        <view class="item-k">{{item.relation || '—'}}</view>
+        <view class="item-v">
+          {{item.name}} · {{item.phone}}
+          <text wx:if="{{item.phone_full}}" class="call" data-phone="{{item.phone_full}}" catchtap="onCall">拨打</text>
+        </view>
+      </view>
+      <view wx:if="{{!archives.contact.length}}" class="muted pad">暂无记录</view>
+      <view class="addline" data-type="contact" bindtap="onAddItem">＋ 添加</view>
+    </view>
+
+    <!-- 共享权限（仅档案归属人可设置每位家人的权限） -->
+    <view wx:if="{{canManage}}" class="card block">
+      <view class="sec-title">
+        <view class="h"><view class="bar"></view>共享权限</view>
+        <view class="more">{{accessList.length}} 位</view>
+      </view>
+      <view class="muted pad">为每位家人设置对该档案的权限：<text class="bold">查看</text> 仅可看；<text class="bold">记录</text> 可看可改；<text class="bold">无</text> 则看不到。默认看不到，需你主动授权。</view>
+      <view class="acc" wx:for="{{accessList}}" wx:key="user_id" wx:for-item="m">
+        <view class="acc-name">{{m.nickname}}</view>
+        <view class="acc-levels">
+          <view class="lv {{m.level === 'none' ? 'on' : ''}}" data-uid="{{m.user_id}}" data-level="none" bindtap="onSetAccess">无</view>
+          <view class="lv {{m.level === 'read' ? 'on' : ''}}" data-uid="{{m.user_id}}" data-level="read" bindtap="onSetAccess">查看</view>
+          <view class="lv {{m.level === 'edit' ? 'on' : ''}}" data-uid="{{m.user_id}}" data-level="edit" bindtap="onSetAccess">记录</view>
+        </view>
+      </view>
+      <view wx:if="{{!accessList.length}}" class="muted pad">家庭成员不足 2 人时无需设置</view>
+    </view>
+
+    <!-- 紧急信息卡 -->
+    <view class="card emergency-toggle" bindtap="onEmergency">
+      <view class="emg-title">紧急信息卡</view>
+      <view class="muted">血型 · 过敏史 · 在服药物 · 紧急联系人，急救时可直接出示</view>
+    </view>
+
+    <view wx:if="{{showEmergency}}" class="card emg-card">
+      <view class="emg-name">{{person.name}}</view>
+      <view class="muted">{{person.gender === 'male' ? '男' : (person.gender === 'female' ? '女' : '—')}} · {{person.age}} 岁 · {{person.blood_type}} 型</view>
+      <view class="emg-line">
+        <view class="emg-k">过敏史</view>
+        <view class="emg-v danger">
+          <block wx:if="{{archives.allergy.length}}">
+            <text wx:for="{{archives.allergy}}" wx:key="id" wx:for-item="a">{{a.allergen}} </text>
+          </block>
+          <block wx:else>无已知过敏</block>
+        </view>
+      </view>
+      <view class="emg-line">
+        <view class="emg-k">基础病</view>
+        <view class="emg-v">
+          <block wx:if="{{archives.chronic.length}}">
+            <text wx:for="{{archives.chronic}}" wx:key="id" wx:for-item="c">{{c.name}} </text>
+          </block>
+          <block wx:else>无</block>
+        </view>
+      </view>
+      <view class="emg-line">
+        <view class="emg-k">在服药物</view>
+        <view class="emg-v">
+          <block wx:if="{{medSummary.active_items.length}}">
+            <view wx:for="{{medSummary.active_items}}" wx:key="name">
+              {{item.name}} {{item.spec}}<text wx:if="{{!item.is_long_term}}" class="tag tag-short">短期</text>
+            </view>
+          </block>
+          <block wx:else>无</block>
+        </view>
+      </view>
+      <view class="emg-note">本卡为家庭自填记录，非医疗机构出具。紧急情况请立即拨打 120。</view>
+    </view>
+
+    <view class="bottom-actions">
+      <view class="btn btn-ghost flex1" bindtap="openPersonForm">编辑成员</view>
+      <view class="btn btn-primary sum-btn" bindtap="onSummary">医生摘要 →</view>
+    </view>
+  </block>
+
+  <!-- 新增模式下的空态 -->
+  <view wx:elif="{{!loading}}" class="empty">请填写成员信息</view>
+
+  <!-- 档案项表单 -->
+  <form-sheet show="{{form.show}}" title="{{form.title}}" tip="{{form.tip}}"
+              fields="{{form.fields}}" values="{{form.values}}"
+              bind:submit="onFormSubmit" bind:cancel="onFormCancel" />
+
+  <!-- 成员表单 -->
+  <form-sheet show="{{personForm.show}}"
+              title="{{person ? '编辑成员' : '添加家庭成员'}}"
+              tip="{{person ? '' : '给老人或小孩代管档案时，必须取得本人（或监护人）同意'}}"
+              fields="{{personForm.fields}}" values="{{personForm.values}}"
+              bind:submit="onPersonFormSubmit" bind:cancel="onPersonFormCancel" />
+</view>

@@ -1,0 +1,63 @@
+/* 健康时间线 */
+
+.searchwrap { padding: 16rpx 28rpx 4rpx; }
+.search {
+  display: flex; align-items: center;
+  background: #F2F5F8; border-radius: 18rpx; padding: 16rpx 20rpx;
+}
+.search-ic { font-size: 26rpx; opacity: .45; margin-right: 12rpx; }
+.search input { flex: 1; font-size: 27rpx; }
+.search-clear { color: var(--t3); font-size: 26rpx; padding: 0 8rpx; }
+
+.tl-month {
+  padding: 28rpx 32rpx 8rpx;
+  font-size: 24rpx; color: var(--t3); font-weight: 600; letter-spacing: 1rpx;
+}
+.ongoing-label { color: var(--warn); }
+
+.tl {
+  margin: 0 28rpx;
+  background: var(--card); border-radius: 24rpx; overflow: hidden;
+}
+.ev {
+  display: flex; align-items: center;
+  padding: 24rpx 28rpx; position: relative;
+}
+.ev + .ev { border-top: 1rpx solid var(--line); }
+.ev.on { background: linear-gradient(90deg, #FFF7F0, #fff 70%); }
+.ev.on::before {
+  content: ''; position: absolute; left: 0; top: 20rpx; bottom: 20rpx;
+  width: 6rpx; border-radius: 0 6rpx 6rpx 0; background: var(--warn);
+}
+.ev .badge {
+  width: 80rpx; height: 80rpx; border-radius: 22rpx;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 26rpx; font-weight: 700; flex-shrink: 0; margin-right: 22rpx;
+}
+.kind-condition { background: var(--kind-condition-bg); color: var(--kind-condition); }
+.kind-visit { background: var(--kind-visit-bg); color: var(--kind-visit); }
+.kind-exam { background: var(--kind-exam-bg); color: var(--kind-exam); }
+.kind-checkup { background: var(--kind-checkup-bg); color: var(--kind-checkup); }
+.kind-vaccine { background: var(--kind-vaccine-bg); color: var(--kind-vaccine); }
+.kind-metric { background: var(--kind-metric-bg); color: var(--kind-metric); }
+
+.ev .body { flex: 1; min-width: 0; }
+.ev .r1 { display: flex; align-items: center; }
+.ev-title { font-size: 29rpx; font-weight: 600; }
+.ongoing-tag {
+  margin-left: 12rpx; padding: 2rpx 12rpx; border-radius: 10rpx;
+  background: var(--warn); color: #fff; font-size: 20rpx; font-weight: 600;
+}
+.ev .r2 { font-size: 24rpx; color: var(--t3); margin-top: 6rpx; }
+.ev .arrow { color: #CBD2DA; font-size: 32rpx; margin-left: 12rpx; }
+
+/* 悬浮按钮 */
+.fab {
+  position: fixed; right: 36rpx; bottom: 60rpx;
+  width: 108rpx; height: 108rpx; border-radius: 50%;
+  background: var(--brand); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 52rpx; font-weight: 300;
+  box-shadow: 0 12rpx 32rpx rgba(14, 159, 110, .42);
+  z-index: 20;
+}

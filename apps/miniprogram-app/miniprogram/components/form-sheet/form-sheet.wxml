@@ -1,0 +1,58 @@
+<!-- 通用表单弹层 -->
+<view class="mask" wx:if="{{show}}" bindtap="onCancel">
+  <view class="sheet" catchtap="noop">
+    <view class="hd">
+      <view class="hd-title">{{title}}</view>
+      <view class="hd-close" bindtap="onCancel">✕</view>
+    </view>
+
+    <scroll-view class="bd" scroll-y>
+      <view wx:if="{{tip}}" class="tip">{{tip}}</view>
+
+      <view class="fld" wx:for="{{fields}}" wx:key="k" wx:for-item="f">
+        <view class="label">{{f.label}}<text wx:if="{{f.required}}" class="req">*</text></view>
+
+        <!-- 文本 -->
+        <input wx:if="{{f.type === 'text' || f.type === 'number' || !f.type}}"
+               class="input" type="{{f.type === 'number' ? 'digit' : 'text'}}"
+               placeholder="{{f.placeholder}}" value="{{v[f.k]}}"
+               data-k="{{f.k}}" bindinput="onInput" />
+
+        <!-- 多行 -->
+        <textarea wx:elif="{{f.type === 'textarea'}}" class="textarea"
+                  placeholder="{{f.placeholder}}" value="{{v[f.k]}}"
+                  data-k="{{f.k}}" bindinput="onInput" />
+
+        <!-- 日期 -->
+        <view wx:elif="{{f.type === 'date'}}" class="date-row">
+          <picker class="flex1" mode="date" value="{{v[f.k]}}"
+                  data-k="{{f.k}}" bindchange="onDate">
+            <view class="picker">{{v[f.k] || '请选择日期'}}</view>
+          </picker>
+          <view wx:if="{{v[f.k]}}" class="date-clear" data-k="{{f.k}}" bindtap="onClearDate">清空</view>
+        </view>
+
+        <!-- 单选 chips -->
+        <view wx:elif="{{f.type === 'chips'}}" class="chips">
+          <view wx:for="{{f.options}}" wx:key="*this" wx:for-item="opt"
+                class="chip {{v[f.k] === opt ? 'on' : ''}}"
+                data-k="{{f.k}}" data-v="{{opt}}" bindtap="onChip">{{opt}}</view>
+        </view>
+
+        <!-- 多选 chips -->
+        <view wx:elif="{{f.type === 'multi'}}" class="chips">
+          <view wx:for="{{f.options}}" wx:key="*this" wx:for-item="opt"
+                class="chip {{v[f.k] && v[f.k].indexOf(opt) >= 0 ? 'on' : ''}}"
+                data-k="{{f.k}}" data-v="{{opt}}" data-multi="1" bindtap="onChip">{{opt}}</view>
+        </view>
+
+        <view wx:if="{{f.hint}}" class="hint">{{f.hint}}</view>
+      </view>
+    </scroll-view>
+
+    <view class="ft">
+      <view class="btn btn-ghost flex1" bindtap="onCancel">取消</view>
+      <view class="btn btn-primary ft-submit" bindtap="onSubmit">{{submitText}}</view>
+    </view>
+  </view>
+</view>

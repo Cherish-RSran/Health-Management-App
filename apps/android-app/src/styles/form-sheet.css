@@ -1,0 +1,79 @@
+/* 由 miniprogram/components/form-sheet/form-sheet.wxss 自动转换 */
+.mask {
+  position: fixed; left: 0; right: 0; top: 0; bottom: 0;
+  background: rgba(16, 24, 40, .45);
+  z-index: 900;
+  display: flex; align-items: flex-end;
+}
+.sheet {
+  width: 100%; max-height: 86vh;
+  background: #fff;
+  border-radius: calc(32 * var(--rpx)) calc(32 * var(--rpx)) 0 0;
+  display: flex; flex-direction: column;
+  animation: sheetUp .24s ease;
+}
+@keyframes sheetUp {
+  from { transform: translateY(calc(60 * var(--rpx))); opacity: .6; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.hd {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: calc(32 * var(--rpx)) calc(32 * var(--rpx)) calc(20 * var(--rpx));
+  border-bottom: calc(1 * var(--rpx)) solid #EEF1F4;
+}
+.hd-title { font-size: calc(33 * var(--rpx)); font-weight: 600; }
+.hd-close { color: #9CA3AF; font-size: calc(34 * var(--rpx)); padding: 0 calc(10 * var(--rpx)); }
+
+.bd { flex: 1; padding: calc(28 * var(--rpx)) calc(32 * var(--rpx)); }
+
+.tip {
+  font-size: calc(23 * var(--rpx)); color: #6B7280; line-height: 1.7;
+  background: #F7F9FB; border-radius: calc(14 * var(--rpx));
+  padding: calc(20 * var(--rpx)) calc(24 * var(--rpx)); margin-bottom: calc(28 * var(--rpx));
+}
+
+.fld { margin-bottom: calc(32 * var(--rpx)); }
+.label { font-size: calc(25 * var(--rpx)); color: #6B7280; font-weight: 600; margin-bottom: calc(14 * var(--rpx)); }
+.req { color: #EF4444; margin-left: calc(6 * var(--rpx)); }
+
+.input, .textarea, .picker {
+  width: 100%;
+  border: calc(1 * var(--rpx)) solid #E4E8ED; border-radius: calc(18 * var(--rpx));
+  padding: calc(22 * var(--rpx)) calc(24 * var(--rpx)); font-size: calc(29 * var(--rpx));
+  background: #fff; box-sizing: border-box;
+}
+.textarea { height: calc(150 * var(--rpx)); }
+.picker { color: #16191F; }
+
+.chips { display: flex; flex-wrap: wrap; }
+.chip {
+  padding: calc(16 * var(--rpx)) calc(28 * var(--rpx)); margin: 0 calc(16 * var(--rpx)) calc(16 * var(--rpx)) 0;
+  border-radius: calc(16 * var(--rpx)); background: #F4F6F8;
+  font-size: calc(27 * var(--rpx)); color: #6B7280;
+  border: calc(2 * var(--rpx)) solid transparent;
+}
+.chip.on {
+  background: #E7F6F0; border-color: #0E9F6E;
+  color: #0B8057; font-weight: 600;
+}
+
+.hint { font-size: calc(22 * var(--rpx)); color: #9CA3AF; margin-top: calc(12 * var(--rpx)); line-height: 1.6; }
+
+.date-row { display: flex; align-items: center; }
+.date-clear {
+  flex-shrink: 0; margin-left: calc(20 * var(--rpx));
+  padding: calc(18 * var(--rpx)) calc(24 * var(--rpx)); border-radius: calc(16 * var(--rpx));
+  background: #F4F6F8; color: #6B7280; font-size: calc(25 * var(--rpx));
+}
+
+.ft {
+  display: flex; padding: calc(20 * var(--rpx)) calc(32 * var(--rpx)) calc(calc(24 * var(--rpx)) + env(safe-area-inset-bottom));
+  border-top: calc(1 * var(--rpx)) solid #EEF1F4;
+}
+.ft-submit { flex: 1.6; margin-left: calc(20 * var(--rpx)); }
+
+/* 大字模式 */
+.big-mode .label { font-size: calc(29 * var(--rpx)); }
+.big-mode .input, .big-mode .textarea, .big-mode .picker { font-size: calc(33 * var(--rpx)); }
+.big-mode .chip { font-size: calc(31 * var(--rpx)); }

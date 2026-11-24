@@ -1,0 +1,101 @@
+<!-- 医生摘要 -->
+<view class="page {{big ? 'big-mode' : ''}}">
+
+  <view wx:if="{{loading}}" class="empty">加载中…</view>
+
+  <block wx:elif="{{error}}">
+    <view class="empty">{{error}}</view>
+    <view class="btn btn-primary btn-block" bindtap="retry">重试</view>
+  </block>
+
+  <!-- ============ 配置视图 ============ -->
+  <block wx:elif="{{mode === 'config' && summary}}">
+    <view class="card auto-card">
+      <view class="auto-title">自动必带（不可取消）</view>
+      <view class="auto-body">
+        过敏史 · 基础病 · 长期用药 · 年龄性别血型 · 本次病程与本次用药
+      </view>
+    </view>
+
+    <view class="card">
+      <view class="sec-title">
+        <view class="h"><view class="bar"></view>可选择加入</view>
+        <view class="more">{{generating ? '生成中…' : '可随时调整'}}</view>
+      </view>
+      <view class="row" wx:for="{{optMeta}}" wx:key="k" data-k="{{item.k}}" bindtap="onToggleOption">
+        <view class="ic" style="background:{{options[item.k] ? '#E7F6F0' : '#F2F5F8'}};color:{{options[item.k] ? '#0B8057' : '#9CA3AF'}}">
+          {{options[item.k] ? '✓' : ''}}
+        </view>
+        <view class="tx">
+          <view class="t1">{{item.label}}</view>
+          <view class="t2">{{availability[item.k] ? '有数据可加入' : '暂无数据'}}</view>
+        </view>
+        <view class="switch {{options[item.k] ? 'on' : ''}}"><view class="knob"></view></view>
+      </view>
+    </view>
+
+    <!-- 摘要预览 -->
+    <view class="card preview">
+      <view class="sec-title"><view class="h"><view class="bar"></view>摘要预览</view></view>
+      <view class="pv-head">
+        <view class="pv-name">{{summary.header.name}}</view>
+        <view class="pv-meta">
+          {{summary.header.sex}}
+          <block wx:if="{{summary.header.age || summary.header.age === 0}}"> · {{summary.header.age}} 岁</block>
+          <block wx:if="{{summary.header.blood_type}}"> · {{summary.header.blood_type}} 型</block>
+        </view>
+      </view>
+      <view class="pv-block {{item.emphasis ? 'pv-danger' : ''}}"
+            wx:for="{{summary.blocks}}" wx:key="key" wx:for-item="b">
+        <view class="pv-label">{{b.label}}</view>
+        <view class="pv-text">
+          <block wx:if="{{b.items.length}}">
+            <view wx:for="{{b.items}}" wx:key="text" wx:for-item="it">{{it.text}}</view>
+          </block>
+          <block wx:else>{{b.empty_text}}</block>
+        </view>
+      </view>
+    </view>
+
+    <view class="bottom-actions">
+      <view class="btn btn-ghost flex1" bindtap="onExport">导出 / 分享</view>
+      <view class="btn btn-primary sum-btn" bindtap="onShowDoctor">全屏出示 →</view>
+    </view>
+  </block>
+
+  <!-- ============ 全屏医生模式 ============ -->
+  <view wx:elif="{{mode === 'doctor'}}" class="doctor">
+    <view class="doc-head">
+      <view class="doc-tag">本次就诊摘要</view>
+      <view class="doc-name">{{summary.header.name}}</view>
+      <view class="doc-meta">
+        {{summary.header.sex}}
+        <block wx:if="{{summary.header.age || summary.header.age === 0}}"> · {{summary.header.age}} 岁</block>
+        <block wx:if="{{summary.header.blood_type}}"> · {{summary.header.blood_type}} 型</block>
+      </view>
+      <view class="doc-time">由家庭健康档案生成</view>
+    </view>
+
+    <scroll-view class="doc-body" scroll-y>
+      <view class="dsec {{item.emphasis ? 'allergy' : ''}}"
+            wx:for="{{summary.blocks}}" wx:key="key" wx:for-item="b">
+        <view class="dsec-label">{{b.emphasis ? '⚠ ' : ''}}{{b.label}}</view>
+        <view class="dsec-text">
+          <block wx:if="{{b.items.length}}">
+            <view wx:for="{{b.items}}" wx:key="text" wx:for-item="it">{{it.text}}</view>
+          </block>
+          <block wx:else>{{b.empty_text}}</block>
+        </view>
+      </view>
+      <view class="doc-note">本摘要由家庭自填记录整理，非医疗机构出具</view>
+    </scroll-view>
+
+    <view class="doc-foot">
+      <view class="btn btn-ghost flex1" bindtap="onExitDoctor">返回</view>
+      <view class="btn btn-plain flex1 ml20" bindtap="onExport">导出 / 分享</view>
+    </view>
+  </view>
+
+  <!-- 离屏画布：仅供「保存为图片」导出摘要卡片使用 -->
+  <canvas type="2d" id="exportCanvas" class="export-canvas"></canvas>
+</view>

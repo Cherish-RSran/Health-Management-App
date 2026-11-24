@@ -1,0 +1,179 @@
+<!-- 我的 -->
+<view class="page {{big ? 'big-mode' : ''}}">
+
+  <view wx:if="{{loading}}" class="empty">加载中…</view>
+
+  <block wx:elif="{{needFamily}}">
+    <view class="empty">
+      <view>还没有家庭</view>
+      <view class="muted">创建家庭后即可开始记录</view>
+    </view>
+    <view class="btn btn-primary btn-block" bindtap="onCreateFamily">创建家庭</view>
+    <view class="btn btn-ghost btn-block mt16" bindtap="onJoinFamily">用邀请码加入</view>
+  </block>
+
+  <block wx:elif="{{error}}">
+    <view class="empty">{{error}}</view>
+    <view class="btn btn-primary btn-block" bindtap="retry">重试</view>
+  </block>
+
+  <block wx:else>
+    <!-- 个人信息 -->
+    <view class="card profile" bindtap="onEditName">
+      <view class="avatar">{{me.nickname || '我'}}</view>
+      <view class="flex1">
+        <view class="p-name">
+          {{me.nickname || '未设置昵称'}}
+          <text wx:if="{{isAdmin}}" class="tag tag-md">管理员</text>
+        </view>
+        <view class="p-sub">{{family.name}} · {{me.phone || '未绑定手机号'}}</view>
+      </view>
+      <view class="go">›</view>
+    </view>
+
+    <!-- 账号：手机号 / 登录密码 -->
+    <view class="card card-tight">
+      <view class="row" bindtap="onEditPhone">
+        <view class="ic" style="background:#E7F6F0;color:#0B8057">机</view>
+        <view class="tx">
+          <view class="t1">手机号</view>
+          <view class="t2">{{me.phone || '未填写 · 填了可一键填进紧急联系人'}}</view>
+        </view>
+        <view class="go">›</view>
+      </view>
+      <view class="row" bindtap="onEditPassword">
+        <view class="ic" style="background:#FEF3C7;color:#B45309">密</view>
+        <view class="tx">
+          <view class="t1">登录密码</view>
+          <view class="t2">{{me.has_password ? '已设置，可修改' : '未设置 · 设置后可用手机号+密码登录'}}</view>
+        </view>
+        <view class="go">›</view>
+      </view>
+    </view>
+
+    <!-- 家庭管理 -->
+    <view class="card">
+      <view class="sec-title">
+        <view class="h"><view class="bar"></view>家庭管理</view>
+        <view class="more">{{members.length}} 位成员</view>
+      </view>
+
+      <view wx:if="{{isAdmin}}" class="invite-row">
+        <view class="code">{{family.invite_code}}</view>
+        <view class="mini-btn no" bindtap="onCopyCode">复制</view>
+        <view class="mini-btn no" bindtap="onRefreshCode">刷新</view>
+      </view>
+
+      <view class="row" wx:for="{{members}}" wx:key="user_id">
+        <view class="ic" style="background:var(--brand-2);color:var(--brand-3)">
+          {{item.nickname || '成员'}}
+        </view>
+        <view class="tx">
+          <view class="t1">
+            {{item.nickname || '未设置昵称'}}
+            <text wx:if="{{item.role === 'admin'}}" class="tag tag-md">管理员</text>
+            <text wx:if="{{item.is_me}}" class="tag tag-grey">我</text>
+          </view>
+          <view class="t2">{{item.relation_label || '家人'}}{{item.phone ? ' · ' + item.phone : ''}}</view>
+        </view>
+        <view wx:if="{{isAdmin && !item.is_me}}" class="mini-btn no"
+              data-id="{{item.user_id}}" data-name="{{item.nickname}}"
+              catchtap="onRemoveMember">移除</view>
+      </view>
+
+      <block wx:if="{{pending.length}}">
+        <view class="sub-label">待审批</view>
+        <view class="pend" wx:for="{{pending}}" wx:key="membership_id">
+          <view class="flex1">
+            <view class="t1">{{item.nickname || '新成员'}}</view>
+            <view class="t2">{{item.relation_label || '家人'}} · {{item.phone || ''}}</view>
+          </view>
+          <view class="mini-btn ok" data-id="{{item.membership_id}}" catchtap="onApprove">同意</view>
+          <view class="mini-btn no" data-id="{{item.membership_id}}" catchtap="onReject">拒绝</view>
+        </view>
+      </block>
+
+      <view class="perm-note">
+        管理员只负责成员进出，<text class="bold">不代表能查看所有档案</text>。
+        档案可见性由 person_access 决定（owner / edit / read / none）。
+      </view>
+    </view>
+
+    <!-- 设置 -->
+    <view class="card card-tight">
+      <view class="row" bindtap="onToggleBig">
+        <view class="ic" style="background:#EEF0FF;color:#4F46E5">字</view>
+        <view class="tx">
+          <view class="t1">大字模式</view>
+          <view class="t2">给老人使用，字号整体放大</view>
+        </view>
+        <view class="switch {{big ? 'on' : ''}}"><view class="knob"></view></view>
+      </view>
+    </view>
+
+    <!-- 数据 -->
+    <view class="card card-tight">
+      <view class="row" bindtap="onExport">
+        <view class="ic" style="background:#F3EEFF;color:#6D28D9">导</view>
+        <view class="tx">
+          <view class="t1">数据导出 / 备份</view>
+          <view class="t2">
+            档案 {{stats.persons}} 份 · 病程 {{stats.conditions}} 次 · 用药 {{stats.medicines}} 条
+          </view>
+        </view>
+        <view class="go">›</view>
+      </view>
+      <view class="row" bindtap="onToggleLogs">
+        <view class="ic" style="background:#EAF1FF;color:#1D4ED8">动</view>
+        <view class="tx">
+          <view class="t1">家庭动态</view>
+          <view class="t2">谁在什么时候看了 / 改了什么</view>
+        </view>
+        <view class="go">{{showLogs ? '⌃' : '›'}}</view>
+      </view>
+      <block wx:if="{{showLogs}}">
+        <view class="logitem" wx:for="{{logs}}" wx:key="id">
+          <view class="log-ic">{{item.action_text}}</view>
+          <view class="flex1">
+            <view class="log-line">{{item.who}}{{item.is_me ? '（我）' : ''}} {{item.action_text}}</view>
+            <view class="log-at">{{item.at}}</view>
+          </view>
+        </view>
+        <view wx:if="{{!logs.length}}" class="muted" style="padding:20rpx 0">暂无记录</view>
+      </block>
+    </view>
+
+    <!-- 隐私 -->
+    <view class="card card-tight">
+      <view class="row" bindtap="onPrivacy">
+        <view class="ic" style="background:#FFF1E7;color:#C2410C">隐</view>
+        <view class="tx">
+          <view class="t1">隐私与授权</view>
+          <view class="t2">敏感信息处理说明</view>
+        </view>
+        <view class="go">›</view>
+      </view>
+      <view class="row" bindtap="onVersionGuide">
+        <view class="ic" style="background:#E8FBF3;color:#0B8057">版</view>
+        <view class="tx">
+          <view class="t1">云端版 vs 本机版</view>
+          <view class="t2">两种版本的区别与怎么选</view>
+        </view>
+        <view class="go">›</view>
+      </view>
+      <view class="row" bindtap="onAbout">
+        <view class="ic" style="background:#F2F5F8;color:#6B7280">关</view>
+        <view class="tx">
+          <view class="t1">关于</view>
+          <view class="t2">v1.0</view>
+        </view>
+        <view class="go">›</view>
+      </view>
+    </view>
+
+    <view class="footer-note">
+      本产品为家庭健康信息记录工具<view>不提供问诊、诊断、处方、用药建议等医疗服务</view>
+      <view>一期无任何推送，提醒均为站内展示</view>
+    </view>
+  </block>
+</view>

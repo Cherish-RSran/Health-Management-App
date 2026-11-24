@@ -1,0 +1,78 @@
+.mask {
+  position: fixed; left: 0; right: 0; top: 0; bottom: 0;
+  background: rgba(16, 24, 40, .45);
+  z-index: 900;
+  display: flex; align-items: flex-end;
+}
+.sheet {
+  width: 100%; max-height: 86vh;
+  background: #fff;
+  border-radius: 32rpx 32rpx 0 0;
+  display: flex; flex-direction: column;
+  animation: sheetUp .24s ease;
+}
+@keyframes sheetUp {
+  from { transform: translateY(60rpx); opacity: .6; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.hd {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 32rpx 32rpx 20rpx;
+  border-bottom: 1rpx solid #EEF1F4;
+}
+.hd-title { font-size: 33rpx; font-weight: 600; }
+.hd-close { color: #9CA3AF; font-size: 34rpx; padding: 0 10rpx; }
+
+.bd { flex: 1; padding: 28rpx 32rpx; }
+
+.tip {
+  font-size: 23rpx; color: #6B7280; line-height: 1.7;
+  background: #F7F9FB; border-radius: 14rpx;
+  padding: 20rpx 24rpx; margin-bottom: 28rpx;
+}
+
+.fld { margin-bottom: 32rpx; }
+.label { font-size: 25rpx; color: #6B7280; font-weight: 600; margin-bottom: 14rpx; }
+.req { color: #EF4444; margin-left: 6rpx; }
+
+.input, .textarea, .picker {
+  width: 100%;
+  border: 1rpx solid #E4E8ED; border-radius: 18rpx;
+  padding: 22rpx 24rpx; font-size: 29rpx;
+  background: #fff; box-sizing: border-box;
+}
+.textarea { height: 150rpx; }
+.picker { color: #16191F; }
+
+.chips { display: flex; flex-wrap: wrap; }
+.chip {
+  padding: 16rpx 28rpx; margin: 0 16rpx 16rpx 0;
+  border-radius: 16rpx; background: #F4F6F8;
+  font-size: 27rpx; color: #6B7280;
+  border: 2rpx solid transparent;
+}
+.chip.on {
+  background: #E7F6F0; border-color: #0E9F6E;
+  color: #0B8057; font-weight: 600;
+}
+
+.hint { font-size: 22rpx; color: #9CA3AF; margin-top: 12rpx; line-height: 1.6; }
+
+.date-row { display: flex; align-items: center; }
+.date-clear {
+  flex-shrink: 0; margin-left: 20rpx;
+  padding: 18rpx 24rpx; border-radius: 16rpx;
+  background: #F4F6F8; color: #6B7280; font-size: 25rpx;
+}
+
+.ft {
+  display: flex; padding: 20rpx 32rpx calc(24rpx + env(safe-area-inset-bottom));
+  border-top: 1rpx solid #EEF1F4;
+}
+.ft-submit { flex: 1.6; margin-left: 20rpx; }
+
+/* 大字模式 */
+.big-mode .label { font-size: 29rpx; }
+.big-mode .input, .big-mode .textarea, .big-mode .picker { font-size: 33rpx; }
+.big-mode .chip { font-size: 31rpx; }

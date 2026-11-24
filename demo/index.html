@@ -1,0 +1,2034 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>家庭健康档案 · 交互 Demo</title>
+<style>
+:root{
+  --brand:#0E9F6E; --brand-2:#E7F6F0; --brand-3:#0B8057;
+  --bg:#F4F6F8; --card:#fff;
+  --text:#16191F; --t2:#6B7280; --t3:#9CA3AF;
+  --line:#EEF1F4; --line2:#E4E8ED;
+  --orange:#F97316; --blue:#3B82F6; --purple:#8B5CF6;
+  --cyan:#06B6D4; --green:#22C55E; --red:#EF4444;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  background:radial-gradient(1200px 600px at 50% -10%,#F7FAFC,#E4E9EF 70%);
+  display:flex;align-items:center;justify-content:center;min-height:100vh;
+  padding:28px 16px;color:var(--text);-webkit-font-smoothing:antialiased;
+}
+.phone{
+  width:390px;height:812px;background:var(--bg);border-radius:46px;
+  position:relative;overflow:hidden;display:flex;flex-direction:column;
+  box-shadow:0 0 0 11px #14171C,0 0 0 13px #34393F,0 40px 80px rgba(16,24,40,.30);
+}
+.statusbar{height:46px;flex:0 0 auto;display:flex;align-items:center;
+  justify-content:space-between;padding:0 26px 0 30px;font-size:14px;font-weight:600;letter-spacing:.2px}
+.statusbar .right{display:flex;align-items:center;gap:5px;font-size:12px}
+.navbar{height:44px;flex:0 0 auto;display:flex;align-items:center;
+  justify-content:center;position:sticky;top:0;z-index:12;padding:0 90px;background:var(--bg)}
+.navbar .title{font-size:17px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.navbar .back{position:absolute;left:18px;top:50%;transform:translateY(-50%);
+  width:30px;height:30px;display:flex;align-items:center;justify-content:center;
+  font-size:22px;color:var(--text);line-height:1;cursor:pointer}
+.capsule{position:absolute;right:14px;top:50%;transform:translateY(-50%);
+  width:78px;height:30px;border:1px solid rgba(0,0,0,.08);background:rgba(255,255,255,.7);
+  border-radius:16px;display:flex;align-items:center;justify-content:space-around;backdrop-filter:blur(6px)}
+.capsule i{width:14px;height:14px;display:block;opacity:.55}
+.screen{flex:1;overflow-y:auto;overflow-x:hidden;position:relative;scrollbar-width:none}
+.screen::-webkit-scrollbar{display:none}
+.page{padding-bottom:16px;animation:fade .22s ease}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.phone-inner{position:absolute;top:46px;left:0;right:0;bottom:0;background:var(--bg);
+  display:flex;flex-direction:column;z-index:50;animation:slideIn .24s cubic-bezier(.22,.8,.3,1)}
+@keyframes slideIn{from{transform:translateX(12px);opacity:0}to{transform:none;opacity:1}}
+.phone-inner .navbar{background:var(--bg)}
+.card{background:var(--card);border-radius:14px;margin:10px 14px;padding:14px;box-shadow:0 1px 2px rgba(16,24,40,.04)}
+.sec-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.sec-title h3{margin:0;font-size:15px;font-weight:600;display:flex;align-items:center;gap:6px}
+.sec-title .bar{width:3px;height:14px;border-radius:2px;background:var(--brand)}
+.sec-title .more{font-size:12px;color:var(--t3)}
+.muted{color:var(--t3);font-size:12px}
+.hr{height:1px;background:var(--line);margin:11px -14px}
+.chip{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;
+  font-size:11.5px;font-weight:500;line-height:1.5}
+.hero{padding:2px 18px 6px;display:flex;align-items:center;justify-content:space-between}
+.hero .fam{font-size:20px;font-weight:700;letter-spacing:-.2px}
+.hero .sub{font-size:12px;color:var(--t3);margin-top:3px}
+.invite{padding:7px 13px;border-radius:20px;background:var(--brand-2);color:var(--brand-3);
+  font-size:12.5px;font-weight:600;cursor:pointer}
+.avatars{display:flex;gap:14px;padding:10px 18px 4px;overflow-x:auto;scrollbar-width:none}
+.avatars::-webkit-scrollbar{display:none}
+.av{flex:0 0 auto;width:52px;text-align:center;cursor:pointer}
+.av .b{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  color:#fff;font-size:16px;font-weight:600;margin:0 auto;box-shadow:0 3px 8px rgba(16,24,40,.14);transition:.18s}
+.av.sel .b{outline:2.5px solid var(--brand);outline-offset:2px}
+.av .n{font-size:11.5px;color:var(--t2);margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.av .n.on{color:var(--brand);font-weight:600}
+.med-person{padding:2px 0}
+.med-person .ph{display:flex;align-items:baseline;gap:7px;margin-bottom:8px}
+.med-person .ph b{font-size:14px}
+.med-person .ph span{font-size:11.5px;color:var(--t3)}
+.slot{display:flex;gap:10px;align-items:flex-start;padding:5px 0 5px 4px}
+.slot .tag{flex:0 0 auto;width:22px;height:22px;border-radius:7px;background:var(--brand-2);
+  color:var(--brand-3);font-size:11.5px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.slot .tag.noon{background:#FFF6E5;color:#B45309}
+.slot .tag.eve{background:#EEF0FF;color:#4F46E5}
+.pill{padding:4px 10px;border-radius:8px;background:#F7F9FB;border:1px solid var(--line);
+  font-size:12.5px;display:inline-flex;align-items:baseline;gap:5px;margin:0 5px 5px 0}
+.pill em{font-style:normal;color:var(--t3);font-size:11px}
+.todo{display:flex;align-items:center;gap:11px;padding:9px 0}
+.todo .dot{width:8px;height:8px;border-radius:50%;flex:0 0 auto}
+.todo .tx{flex:1;min-width:0}
+.todo .tx b{font-size:13.5px;font-weight:500;display:block}
+.todo .tx b.done{text-decoration:line-through;color:var(--t3)}
+.todo .tx span{font-size:11.5px;color:var(--t3)}
+.todo .due{font-size:12px;font-weight:600;white-space:nowrap;text-align:right}
+.due.warn{color:var(--orange)} .due.bad{color:var(--red)} .due.ok{color:var(--t3)}
+.todo .act{width:24px;height:24px;border-radius:50%;border:1.5px solid var(--line2);
+  display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--t3);
+  flex:0 0 auto;cursor:pointer}
+.todo .act.on{background:var(--brand);border-color:var(--brand);color:#fff}
+.filters{background:var(--card);padding:8px 0 10px;position:sticky;top:44px;z-index:11;
+  box-shadow:0 1px 0 var(--line)}
+.frow{display:flex;gap:7px;padding:4px 14px;overflow-x:auto;scrollbar-width:none}
+.frow::-webkit-scrollbar{display:none}
+.f{padding:5.5px 12px;border-radius:20px;font-size:12.5px;background:#F2F5F8;color:var(--t2);
+  white-space:nowrap;cursor:pointer;transition:.16s;border:1px solid transparent}
+.f.on{background:var(--brand);color:#fff;font-weight:600;box-shadow:0 2px 8px rgba(14,159,110,.28)}
+.searchwrap{padding:10px 14px 2px}
+.search{display:flex;align-items:center;gap:8px;background:#F2F5F8;border-radius:11px;padding:9px 12px}
+.search svg{width:16px;height:16px;flex:0 0 auto;opacity:.45}
+.search input{flex:1;border:none;outline:none;background:transparent;font-size:14px;
+  font-family:inherit;color:var(--text)}
+.search input::placeholder{color:#B6BDC6}
+.tl{margin:8px 14px;background:var(--card);border-radius:14px;overflow:hidden;
+  box-shadow:0 1px 2px rgba(16,24,40,.04)}
+.tl-month{padding:12px 18px 4px;font-size:12px;color:var(--t3);font-weight:600;letter-spacing:.4px}
+.ev{display:flex;gap:11px;padding:12px 14px;position:relative;cursor:pointer;transition:background .15s}
+.ev:active{background:#FAFBFC}
+.ev + .ev{border-top:1px solid var(--line)}
+.ev.on{background:linear-gradient(90deg,#FFF7F0,#fff 65%)}
+.ev.on::before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:3px;
+  border-radius:0 3px 3px 0;background:var(--orange)}
+.badge{flex:0 0 auto;width:40px;height:40px;border-radius:11px;display:flex;align-items:center;
+  justify-content:center;font-size:12px;font-weight:700}
+.ev .body{flex:1;min-width:0}
+.ev .r1{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.ev .r1 b{font-size:14.5px;font-weight:600}
+.ev .r2{font-size:12px;color:var(--t3);margin-top:3px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.ev .r2 .who{color:var(--t2)}
+.ev .arrow{position:absolute;right:16px;top:50%;transform:translateY(-50%);color:#CBD2DA;font-size:17px}
+.ongoing{background:var(--orange);color:#fff;font-size:10.5px;padding:1.5px 6px;border-radius:5px;font-weight:600}
+.fab{position:absolute;right:18px;bottom:78px;width:54px;height:54px;border-radius:50%;
+  background:linear-gradient(140deg,#12B57C,#0B8057);color:#fff;display:flex;align-items:center;
+  justify-content:center;font-size:27px;font-weight:300;box-shadow:0 8px 22px rgba(14,159,110,.42);
+  cursor:pointer;z-index:20;transition:.18s;line-height:1}
+.fab:active{transform:scale(.93)}
+.pcard{display:flex;align-items:center;gap:12px;background:var(--card);border-radius:14px;
+  margin:10px 14px;padding:14px;box-shadow:0 1px 2px rgba(16,24,40,.04);cursor:pointer}
+.pcard:active{background:#FAFBFC}
+.pcard .b{width:50px;height:50px;border-radius:16px;display:flex;align-items:center;justify-content:center;
+  color:#fff;font-size:17px;font-weight:600;flex:0 0 auto}
+.pcard .i{flex:1;min-width:0}
+.pcard .i b{font-size:15.5px}
+.pcard .i p{margin:4px 0 0;font-size:12px;color:var(--t3)}
+.tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
+.tg{font-size:11px;padding:2px 7px;border-radius:6px;background:#F2F5F8;color:var(--t2)}
+.tg.al{background:#FEF0EE;color:#C2410C}
+.tg.ch{background:#EEF2FF;color:#4338CA}
+.tg.md{background:#E9F7F1;color:#0B8057}
+.tg.su{background:#F5F3FF;color:#6D28D9}
+.btn{display:flex;align-items:center;justify-content:center;gap:6px;height:46px;border-radius:12px;
+  font-size:15px;font-weight:600;cursor:pointer;transition:.16s;border:none}
+.btn:active{transform:scale(.985)}
+.btn.sm{height:38px;font-size:13.5px;border-radius:10px}
+.btn.primary{background:linear-gradient(140deg,#12B57C,#0B8057);color:#fff;
+  box-shadow:0 6px 16px rgba(14,159,110,.3)}
+.btn.ghost{background:#fff;color:var(--brand-3);border:1.5px solid var(--brand-2)}
+.btn.plain{background:#F2F5F8;color:var(--t2)}
+.btn.wide{margin:0 14px}
+.step{display:flex;gap:12px;position:relative;padding-bottom:16px}
+.step:last-child{padding-bottom:0}
+.step .rail{flex:0 0 auto;width:22px;display:flex;flex-direction:column;align-items:center}
+.step .pt{width:11px;height:11px;border-radius:50%;background:var(--brand);margin-top:4px;
+  box-shadow:0 0 0 3px var(--brand-2)}
+.step.empty .pt{background:#fff;border:2px solid var(--line2);box-shadow:none}
+.step.alert .pt{background:var(--red);box-shadow:0 0 0 3px #FDE8E8}
+.step .line{flex:1;width:2px;background:var(--line);margin-top:4px}
+.step .c{flex:1;min-width:0}
+.step .d{font-size:11.5px;color:var(--t3);font-weight:600;display:flex;gap:7px;align-items:center}
+.step .txt{font-size:13.5px;margin-top:4px;line-height:1.55}
+.step .txt .sev{font-size:11px;padding:1.5px 6px;border-radius:5px;margin-left:6px;font-weight:600}
+.sev.s1{background:#FEF6E7;color:#B45309}
+.sev.s2{background:#FFEDE4;color:#C2410C}
+.sev.s3{background:#FDE8E8;color:#B91C1C}
+.step.empty .txt{color:#B6BDC6}
+.step .edit{font-size:11px;color:var(--t3);margin-top:6px;cursor:pointer}
+.temp{display:inline-flex;align-items:center;gap:4px;background:#FDE8E8;color:#B91C1C;
+  font-size:11.5px;font-weight:600;padding:2px 7px;border-radius:6px;margin-left:6px}
+.photo{width:76px;height:76px;border-radius:10px;margin-top:8px;cursor:pointer;
+  background:linear-gradient(135deg,#E9EDF2,#D7DEE6);display:flex;align-items:center;
+  justify-content:center;font-size:10.5px;color:var(--t3);border:1px solid var(--line2)}
+.kv{display:flex;gap:10px;padding:8px 0;font-size:13px;align-items:flex-start}
+.kv + .kv{border-top:1px solid var(--line)}
+.kv .k{flex:0 0 62px;color:var(--t3);font-size:12.5px}
+.kv .v{flex:1;line-height:1.6;min-width:0}
+.kv .v .ed{float:right;color:var(--brand-3);font-size:11.5px;cursor:pointer}
+.row{display:flex;align-items:center;gap:11px;padding:13px 0;cursor:pointer}
+.row+.row{border-top:1px solid var(--line)}
+.row .ic{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;
+  justify-content:center;font-size:13px;font-weight:600;flex:0 0 auto}
+.row .tx{flex:1;min-width:0}
+.row .tx b{font-size:14.5px;font-weight:500;display:block}
+.row .tx span{font-size:11.5px;color:var(--t3);display:block;margin-top:3px}
+.row .go{color:#CBD2DA;font-size:17px}
+.addline{display:flex;align-items:center;justify-content:center;gap:5px;padding:12px 0;
+  font-size:13px;color:var(--brand-3);font-weight:600;cursor:pointer;border-top:1px dashed var(--line2)}
+.sw{width:46px;height:27px;border-radius:15px;background:#DFE4EA;position:relative;
+  transition:.2s;flex:0 0 auto;cursor:pointer}
+.sw.on{background:var(--brand)}
+.sw i{position:absolute;top:2.5px;left:2.5px;width:22px;height:22px;border-radius:50%;
+  background:#fff;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.18)}
+.sw.on i{left:21.5px}
+.fld{margin-bottom:16px}
+.fld>label{display:block;font-size:12.5px;color:var(--t3);font-weight:600;margin-bottom:8px}
+.fld .req{color:var(--red)}
+.fld input,.fld textarea{width:100%;border:1px solid var(--line2);border-radius:10px;
+  padding:10px 12px;font-size:14px;font-family:inherit;outline:none;background:#fff;color:var(--text)}
+.fld input:focus,.fld textarea:focus{border-color:var(--brand)}
+.fld textarea{resize:none;height:72px;line-height:1.55}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opt{padding:8px 14px;border-radius:10px;background:#F4F6F8;font-size:13.5px;cursor:pointer;
+  border:1.5px solid transparent;transition:.15s}
+.opt.on{background:var(--brand-2);border-color:var(--brand);color:var(--brand-3);font-weight:600}
+.doc{position:absolute;inset:0;background:#fff;z-index:60;display:flex;flex-direction:column;
+  animation:slideUp .26s cubic-bezier(.22,.8,.3,1)}
+@keyframes slideUp{from{transform:translateY(14px);opacity:0}to{transform:none;opacity:1}}
+.doc-hd{flex:0 0 auto;padding:12px 18px 14px;border-bottom:1.5px solid #16191F}
+.doc-hd .t{font-size:12px;color:var(--t3);letter-spacing:1.2px;font-weight:600}
+.doc-hd .n{font-size:23px;font-weight:700;margin-top:6px;letter-spacing:-.3px}
+.doc-hd .m{font-size:13px;color:var(--t2);margin-top:4px}
+.doc-bd{flex:1;overflow-y:auto;padding:16px 18px 22px;scrollbar-width:none}
+.doc-bd::-webkit-scrollbar{display:none}
+.dsec{padding:12px 0}
+.dsec + .dsec{border-top:1px solid var(--line)}
+.dsec .lb{font-size:12px;color:var(--t3);font-weight:700;letter-spacing:.6px;margin-bottom:7px}
+.dsec .ct{font-size:16px;line-height:1.62}
+.allergy{background:#FEF2F2;border:1px solid #FBD5D5;border-radius:10px;padding:11px 13px;margin:0 -5px}
+.allergy .lb{color:#B91C1C !important}
+.allergy .ct{color:#B91C1C;font-size:18px;font-weight:650}
+.dline{font-size:16px;line-height:1.75}
+.doc-ft{flex:0 0 auto;padding:12px 18px;border-top:1px solid var(--line);
+  background:#fff;display:flex;gap:10px}
+.sheet-body{width:100%;max-height:86%;background:#fff;border-radius:20px 20px 0 0;
+  display:flex;flex-direction:column;animation:up .3s cubic-bezier(.22,.8,.3,1)}
+@keyframes up{from{transform:translateY(100%)}to{transform:none}}
+.sheet-bd{flex:1;overflow-y:auto;padding:16px 18px;scrollbar-width:none}
+.sheet-bd::-webkit-scrollbar{display:none}
+.sheet-ft{flex:0 0 auto;padding:12px 18px 18px;border-top:1px solid var(--line);display:flex;gap:10px}
+.steps-bar{display:flex;gap:5px;padding:0 18px 12px}
+.steps-bar i{flex:1;height:3px;border-radius:2px;background:var(--line2)}
+.steps-bar i.on{background:var(--brand)}
+.actions{position:absolute;inset:0;background:rgba(16,24,40,.42);z-index:80;
+  display:flex;align-items:flex-end;animation:fade .16s}
+.actions .box{width:100%;background:#fff;border-radius:18px 18px 0 0;overflow:hidden;animation:up .24s;
+  padding-bottom:14px}
+.actions .it{padding:16px;text-align:center;font-size:15.5px;border-bottom:1px solid var(--line);cursor:pointer}
+.actions .it.danger{color:var(--red)}
+.actions .it.cancel{color:var(--t2);border-bottom:none;margin-top:8px;background:#F7F9FB;font-weight:600}
+.pend{display:flex;align-items:center;gap:11px;padding:13px 0}
+.pend+.pend{border-top:1px solid var(--line)}
+.pend .b{width:42px;height:42px;border-radius:50%;background:#EEF2F7;color:#5B6672;
+  display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600;flex:0 0 auto}
+.mini-btn{padding:6px 13px;border-radius:8px;font-size:12.5px;font-weight:600;cursor:pointer;
+  flex:0 0 auto}
+.mini-btn.ok{background:var(--brand);color:#fff}
+.mini-btn.no{background:#F2F5F8;color:var(--t2)}
+.logitem{display:flex;gap:11px;padding:12px 0;border-top:1px solid var(--line)}
+.logitem:first-child{border-top:none;padding-top:4px}
+.logitem .ic{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;
+  justify-content:center;font-size:12px;font-weight:700;flex:0 0 auto}
+.logitem .tx{flex:1;min-width:0;font-size:13px;line-height:1.6}
+.logitem .tx .w{color:var(--t3);font-size:11.5px;margin-top:3px}
+.emg{background:linear-gradient(150deg,#fff 40%,#FFF5F5);border:1.5px solid #FBD5D5}
+.emg-hd{display:flex;align-items:center;gap:8px;font-size:14.5px;font-weight:700;color:#B91C1C}
+.emg-line{display:flex;gap:9px;font-size:13px;padding:8px 0;border-top:1px solid #FBE3E3}
+.emg-line .k{flex:0 0 70px;color:#C97B7B;font-size:12px}
+.viewer{position:absolute;inset:0;background:rgba(8,10,14,.94);z-index:95;
+  display:flex;flex-direction:column;animation:fade .18s}
+.viewer .ph{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  color:#67707E;font-size:13px;line-height:1.8}
+.tabbar{flex:0 0 auto;height:60px;background:rgba(255,255,255,.94);backdrop-filter:blur(14px);
+  border-top:1px solid var(--line);display:flex;position:relative;z-index:30}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+  cursor:pointer;color:#9AA3AE;transition:.15s;position:relative}
+.tab.on{color:var(--brand)}
+.tab svg{width:23px;height:23px}
+.tab span{font-size:10.5px;font-weight:500}
+.tab .dot{position:absolute;top:9px;right:calc(50% - 17px);width:7px;height:7px;border-radius:50%;
+  background:var(--red);border:1.5px solid #fff}
+.phone.big .screen{zoom:1.14}
+/* ============ 首页卡片拖拽 ============ */
+.card.dragging{position:relative;z-index:99;touch-action:none;transition:none;
+  box-shadow:0 16px 38px rgba(16,24,40,.26);cursor:grabbing}
+/* ============ 紧凑紧急卡 ============ */
+.card.emg-row{display:flex;align-items:center;gap:11px;padding:12px 14px;cursor:pointer;
+  background:linear-gradient(140deg,#fff,#FFF7F7);border:1.5px solid #FBD5D5}
+.card.emg-row .ic{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;
+  justify-content:center;background:#FDE8E8;color:#B91C1C;flex:0 0 auto}
+.card.emg-row .tx{flex:1;min-width:0}
+.card.emg-row .tx b{font-size:14.5px;display:block}
+.card.emg-row .tx span{font-size:11.5px;color:#C97B7B;display:block;margin-top:3px}
+.card.emg-row .go{color:#E5B4B4;font-size:17px}
+/* ============ 行内操作 ============ */
+.acts{float:right;display:flex;gap:10px}
+.acts span{font-size:11.5px;cursor:pointer;color:var(--brand-3)}
+.acts span.del{color:#DC2626}
+/* ============ 短期用药 ============ */
+.pill .short{font-style:normal;font-size:10px;background:#FEF3C7;color:#B45309;
+  padding:1px 5px;border-radius:4px;margin-left:4px}
+.period{font-size:10.5px;color:var(--t3)}
+.period.short{color:#B45309;font-weight:600}
+.toast{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);background:rgba(20,25,32,.86);
+  color:#fff;font-size:13.5px;padding:11px 18px;border-radius:11px;z-index:99;
+  animation:fade .18s;max-width:76%;text-align:center;line-height:1.5}
+.hintbar{position:fixed;left:50%;transform:translateX(-50%);bottom:12px;font-size:11.5px;
+  color:#94A0AC;letter-spacing:.2px;white-space:nowrap}
+@media(max-height:890px){.hintbar{display:none}}
+</style>
+</head>
+<body>
+
+<div class="phone" id="phone">
+  <div class="statusbar">
+    <div id="clock">9:41</div>
+    <div class="right"><span>••••</span><span>WiFi</span><span>100%</span></div>
+  </div>
+  <div class="screen" id="screen"></div>
+  <div id="fab-slot"></div>
+  <div class="tabbar" id="tabbar"></div>
+  <div id="overlay"></div>
+</div>
+<div class="hintbar">Demo 交互演示 · 静态数据 · 所有操作在内存中生效，刷新即还原</div>
+
+<script>
+/* ============================================================================
+   1. 数据层（形状对齐 docs/开发过程及成果.md §四）
+   ============================================================================ */
+const TODAY = '2026-10-17';
+
+const DB = {
+  family: { name:'示例家庭', code:'X8K2M9', owner:'用户A' },
+  me: { name:'用户A', phone:'000****0000', avatar:'A', role:'管理员' },
+  pending: [
+    { id:'q1', name:'成员B', rel:'弟弟', phone:'000****1111', by:'用户A', at:'10.16 20:12' }
+  ],
+  persons: [
+    { id:'p1', name:'成员C', rel:'父亲', sex:'男', birth:'1958-06-12', blood:'O',
+      color:'#3B82F6', ini:'父', ptype:'managed', custodian:'用户A',
+      consent:'2026-03-05 已获本人同意',
+      allergy:[ {n:'青霉素',ty:'药物',sev:'严重',rx:'皮疹、呼吸困难'},
+                {n:'海鲜',ty:'食物',sev:'中等',rx:'皮肤瘙痒'} ],
+      chronic:[ {n:'高血压',d:'2015-03'}, {n:'2 型糖尿病',d:'2019-07'} ],
+      surgery:[ {n:'胆囊切除',d:'2018-05',h:'市第一人民医院'} ],
+      meds:[ {n:'氨氯地平',sp:'5mg',dos:'1 片',fq:'每日 1 次',slots:['morning'],start:'2019-07',end:''},
+             {n:'阿司匹林',sp:'100mg',dos:'1 片',fq:'每日 1 次',slots:['morning'],start:'2021-03',end:''},
+             {n:'二甲双胍',sp:'0.5g',dos:'1 片',fq:'每日 2 次',slots:['morning','evening'],start:'2019-07',end:''},
+             {n:'复方感冒灵颗粒',sp:'1 袋',dos:'1 袋',fq:'每日 3 次',
+              slots:['morning','noon','evening'],start:'2026-10-14',end:'2026-10-17'} ],
+      contacts:[ {n:'成员B',rel:'儿子',phone:'000****1111',pr:1},
+                 {n:'成员D',rel:'配偶',phone:'000****2222',pr:2} ] },
+    { id:'p2', name:'成员D', rel:'母亲', sex:'女', birth:'1961-02-28', blood:'A',
+      color:'#EC4899', ini:'母', ptype:'managed', custodian:'用户A',
+      consent:'2026-03-05 已获本人同意',
+      allergy:[],
+      chronic:[ {n:'骨质疏松',d:'2021-11'} ],
+      surgery:[],
+      meds:[ {n:'钙尔奇 D',sp:'600mg',dos:'1 片',fq:'每日 1 次',slots:['morning'],start:'2021-11',end:''},
+             {n:'二甲双胍',sp:'0.5g',dos:'1 片',fq:'每日 1 次',slots:['noon'],start:'2022-04',end:''} ],
+      contacts:[ {n:'成员B',rel:'儿子',phone:'000****1111',pr:1} ] },
+    { id:'p3', name:'成员E', rel:'儿子', sex:'男', birth:'2018-09-03', blood:'B',
+      color:'#F59E0B', ini:'子', ptype:'self', custodian:'', consent:'',
+      allergy:[], chronic:[], surgery:[], meds:[],
+      contacts:[ {n:'成员B',rel:'父亲',phone:'000****1111',pr:1} ] }
+  ],
+  events: [
+    { id:'e1', pid:'p1', type:'condition', title:'咳嗽', ongoing:true, date:'2026-10-13', sub:'10.13 起 · 已 4 天', ref:'c1' },
+    { id:'e2', pid:'p3', type:'vaccine', title:'流感疫苗 · 第 1 针', date:'2026-09-28', sub:'社区卫生服务中心' },
+    { id:'e3', pid:'p2', type:'condition', title:'腹泻', date:'2026-08-20', sub:'3 天 · 已就诊' },
+    { id:'e4', pid:'p1', type:'checkup', title:'年度体检', date:'2026-06-11', sub:'见报告 · 血常规 / 生化 / 胸部 CT' },
+    { id:'e5', pid:'p1', type:'visit', title:'市一院 · 呼吸内科', date:'2026-05-20', sub:'门诊 · 医生记录：上呼吸道感染' },
+    { id:'e6', pid:'p2', type:'condition', title:'腰扭伤', date:'2026-03-08', sub:'2 周 · 已结束' },
+    { id:'e7', pid:'p1', type:'condition', title:'咳嗽', date:'2026-03-02', sub:'5 天 · 已结束' },
+    { id:'e8', pid:'p2', type:'exam', title:'骨密度检查', date:'2026-02-14', sub:'T 值 -2.4' }
+  ],
+  conditions: {
+    c1: { pid:'p1', title:'咳嗽', start:'2026-10-13', ongoing:true,
+      events:[
+        { date:'2026-10-13', time:'', type:'symptom', text:'咳嗽', sev:1, sevT:'轻' },
+        { date:'2026-10-14', time:'15:30', type:'medication', text:'服用 复方感冒灵颗粒 1 袋' },
+        { date:'2026-10-15', time:'', type:'empty', text:'—（无记录）' },
+        { date:'2026-10-16', time:'', type:'symptom', text:'咳嗽加重', sev:3, sevT:'重',
+          temp:'38.2℃', photo:'咳嗽时拍的照片' },
+        { date:'2026-10-17', time:'', type:'medication', text:'服用 复方感冒灵颗粒 1 袋' }
+      ],
+      medSummary:'复方感冒灵颗粒 × 3 天', visited:'未就诊' }
+  },
+  todos: [
+    { id:'t1', pid:'p1', title:'呼吸内科复查', due:'10.18', cls:'warn', note:'明天', done:false },
+    { id:'t2', pid:'p2', title:'骨科复查', due:'10.10', cls:'bad', note:'已逾期 7 天', done:false },
+    { id:'t3', pid:'p3', title:'流感疫苗 · 第 2 针', due:'10.20', cls:'ok', note:'3 天后', done:false }
+  ],
+  logs: [
+    { who:'用户A', act:'新增补记', target:'成员C · 咳嗽 10.17', ic:'记', at:'10.17 09:12' },
+    { who:'用户A', act:'修改长期用药', target:'成员C · 二甲双胍', ic:'改', at:'10.16 21:04' },
+    { who:'成员D', act:'查看医生摘要', target:'成员C', ic:'看', at:'10.16 10:33' },
+    { who:'用户A', act:'添加成员', target:'成员E', ic:'人', at:'10.02 19:41' }
+  ]
+};
+
+const TYPE = {
+  condition:{ l:'生病', c:'#C2410C', b:'#FFF1E7', s:'病' },
+  visit:    { l:'就诊', c:'#1D4ED8', b:'#EAF1FF', s:'诊' },
+  exam:     { l:'检查', c:'#6D28D9', b:'#F3EEFF', s:'检' },
+  checkup:  { l:'体检', c:'#0E7490', b:'#E4F6FB', s:'查' },
+  vaccine:  { l:'疫苗', c:'#15803D', b:'#E7F7ED', s:'苗' }
+};
+const SLOT = { morning:'早', noon:'中', evening:'晚', bedtime:'睡前' };
+const LOGCOLOR = { '记':['#0B8057','#E7F7ED'], '改':['#6D28D9','#F3EEFF'], '看':['#1D4ED8','#EAF1FF'],
+  '人':['#C2410C','#FFF1E7'], '删':['#B91C1C','#FDE8E8'], '添':['#15803D','#E7F7ED'],
+  '✓':['#15803D','#E7F7ED'], '拒':['#B91C1C','#FDE8E8'], '导':['#6D28D9','#F3EEFF'] };
+
+/* ============================================================================
+   2. 工具
+   ============================================================================ */
+const $ = id => document.getElementById(id);
+let state = { tab:'home', person:'all', fType:'all', q:'', big:false,
+  order:['meds','todos','emg','quick'] };
+
+const P = id => DB.persons.find(x=>x.id===id) || {};
+const EV = id => DB.events.find(x=>x.id===id) || {};
+function pad(n){ return String(n).padStart(2,'0'); }
+function fmtMD(d){ return d ? String(d).slice(5).replace('-','.') : ''; }
+function calcAge(birth){
+  if(!birth) return '';
+  const [y,mo,d] = birth.split('-').map(Number);
+  const [ry,rm,rd] = TODAY.split('-').map(Number);
+  let a = ry - y;
+  if(rm < mo || (rm===mo && rd<d)) a--;
+  return a;
+}
+function nowStr(){
+  const d = new Date();
+  return `${d.getMonth()+1}.${d.getDate()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+function uid(p){ return p + Math.random().toString(36).slice(2,7); }
+function toast(msg, ms=1500){
+  const t = document.createElement('div');
+  t.className = 'toast'; t.textContent = msg;
+  $('phone').appendChild(t);
+  setTimeout(()=>t.remove(), ms);
+}
+function log(act, target, ic){
+  DB.logs.unshift({ who:'用户A', act, target, ic:ic||'改', at:nowStr() });
+}
+
+const ICONS = {
+  home:'<path d="M3 10.4 12 3l9 7.4V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
+  tl:'<path d="M3.5 5h17M3.5 12h17M3.5 19h10"/>',
+  fam:'<circle cx="9" cy="8" r="3.2"/><path d="M2.8 20c0-3.4 2.8-5.6 6.2-5.6s6.2 2.2 6.2 5.6"/><circle cx="17.5" cy="9.5" r="2.5"/><path d="M16 14.6c3 0 5.2 1.9 5.2 4.6"/>',
+  me:'<circle cx="12" cy="8" r="3.6"/><path d="M4.6 20.4c0-3.9 3.3-6.4 7.4-6.4s7.4 2.5 7.4 6.4"/>',
+  search:'<circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/>'
+};
+const icon = (k,c,w) => `<svg viewBox="0 0 24 24" fill="none" stroke="${c||'currentColor'}"
+  stroke-width="${w||1.7}" stroke-linecap="round" stroke-linejoin="round">${ICONS[k]}</svg>`;
+const capsule = () => `<div class="capsule">
+  <i><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.8" fill="#333"/><circle cx="12" cy="12" r="1.8" fill="#333"/><circle cx="19" cy="12" r="1.8" fill="#333"/></svg></i>
+  <i style="width:1px;height:16px;background:rgba(0,0,0,.1)"></i>
+  <i><svg viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="3.6" fill="#333" stroke="none"/></svg></i>
+</div>`;
+const navOverlay = (title, back) => `<div class="navbar"><div class="back" onclick="${back}">‹</div>
+  <div class="title">${title}</div>${capsule()}</div>`;
+
+/* ============================================================================
+   3. 覆盖层通用件
+   ============================================================================ */
+let OV_TOKEN = 0;
+function openOverlay(html){
+  OV_TOKEN++;
+  $('overlay').innerHTML = `<div class="phone-inner">${html}</div>`;
+  $('fab-slot').innerHTML = '';
+}
+function closeOverlay(){
+  $('overlay').innerHTML = '';
+  $('fab-slot').innerHTML = state.tab==='tl' ? '<div class="fab" onclick="openAddMenu()">＋</div>' : '';
+}
+function openActions(items){
+  const box = document.createElement('div');
+  box.className = 'actions';
+  box.innerHTML = `<div class="box">
+    ${items.map((it,i)=>`<div class="it ${it.danger?'danger':''}" data-i="${i}">${it.t}</div>`).join('')}
+    <div class="it cancel" data-i="-1">取消</div></div>`;
+  box.addEventListener('click', e=>{
+    const t = e.target.closest('.it'); if(!t) return;
+    const i = +t.dataset.i;
+    box.remove();
+    if(i>=0) items[i].fn();
+  });
+  $('phone').appendChild(box);
+}
+function confirmBox(msg, onOk){
+  openActions([{ t: msg, fn:onOk }, { t:'取消', fn:()=>{} }]);
+}
+function openViewer(label){
+  const v = document.createElement('div');
+  v.className = 'viewer';
+  v.innerHTML = `<div class="ph">${label||'照片附件'}
+    <span style="font-size:11px;color:#4A5260">云存储私有文件 · 云函数换取临时链接</span>
+    <span style="font-size:11px;color:#4A5260">点击任意处关闭</span></div>`;
+  v.onclick = () => v.remove();
+  $('phone').appendChild(v);
+}
+
+let FV = {}, FORM = null;
+function openForm(cfg, onOk){
+  FV = {};
+  (cfg.fields||[]).forEach(f=>{ FV[f.k] = f.val!==undefined ? f.val : (f.t==='chips' ? (f.single?'':[]) : ''); });
+  FORM = { cfg, onOk };
+  drawForm();
+}
+function drawForm(){
+  const cfg = FORM.cfg;
+  openOverlay(`
+    ${navOverlay(cfg.title, 'closeOverlay()')}
+    <div class="sheet-body" style="max-height:none;flex:1;border-radius:0">
+      <div class="sheet-bd">
+        ${cfg.tip ? `<div class="muted" style="margin-bottom:14px;line-height:1.6">${cfg.tip}</div>` : ''}
+        ${cfg.fields.map(f=>{
+          const v = FV[f.k];
+          let ctl = '';
+          if(f.t==='chips'){
+            const on = x => f.single ? v===x : (v||[]).includes(x);
+            ctl = `<div class="opts">${f.opts.map(o=>`<div class="opt ${on(o)?'on':''}"
+              onclick="togChip('${f.k}','${o}',${f.single?1:0})">${o}</div>`).join('')}</div>`;
+          } else if(f.t==='textarea'){
+            ctl = `<textarea placeholder="${f.ph||''}" oninput="FV['${f.k}']=this.value">${v||''}</textarea>`;
+          } else {
+            const ty = f.t==='num' ? 'tel' : f.t==='date' ? 'date' : 'text';
+            ctl = `<input type="${ty}" placeholder="${f.ph||''}" value="${v||''}"
+              ${f.ro?'readonly style="background:#F7F9FB;color:#9CA3AF"':''}
+              oninput="FV['${f.k}']=this.value"/>`;
+          }
+          return `<div class="fld"><label>${f.l}${f.req?' <span class="req">*</span>':''}</label>${ctl}
+            ${f.hint?`<div class="muted" style="margin-top:6px;line-height:1.5">${f.hint}</div>`:''}</div>`;
+        }).join('')}
+      </div>
+      <div class="sheet-ft">
+        <div class="btn ghost" style="flex:1" onclick="closeOverlay()">取消</div>
+        <div class="btn primary" style="flex:1.6" onclick="submitForm()">${cfg.submit||'保存'}</div>
+      </div>
+    </div>`);
+}
+function togChip(k, o, single){
+  if(single){ FV[k] = (FV[k]===o) ? '' : o; }
+  else {
+    const a = FV[k] || [];
+    const i = a.indexOf(o);
+    if(i>=0) a.splice(i,1); else a.push(o);
+    FV[k] = a;
+  }
+  drawForm();
+}
+function submitForm(){
+  const cfg = FORM.cfg, onOk = FORM.onOk;
+  for(const f of cfg.fields){
+    if(f.req){
+      const v = FV[f.k];
+      if(!v || (Array.isArray(v) && !v.length)){ toast('请填写：' + f.l); return; }
+    }
+  }
+  const before = OV_TOKEN;
+  if(onOk(FV) === false) return;
+  // onOk 内部若已打开新页面（如回到档案页），不要再关掉它
+  if(OV_TOKEN !== before) return;
+  closeOverlay();
+}
+
+/* ============================================================================
+   4. TabBar + 路由
+   ============================================================================ */
+const TABS = [
+  { k:'home', t:'首页', i:'home' },
+  { k:'tl',   t:'健康时间线', i:'tl' },
+  { k:'fam',  t:'家人', i:'fam' },
+  { k:'me',   t:'我的', i:'me' }
+];
+function renderTabbar(){
+  $('tabbar').innerHTML = TABS.map(x=>`
+    <div class="tab ${state.tab===x.k?'on':''}" onclick="go('${x.k}')">
+      ${icon(x.i, state.tab===x.k?'#0E9F6E':'#9AA3AE')}
+      <span>${x.t}</span>
+      ${x.k==='home' && (DB.todos.some(t=>t.cls==='bad'&&!t.done) || DB.pending.length) ? '<i class="dot"></i>' : ''}
+    </div>`).join('');
+}
+function go(tab){ state.tab = tab; render(); }
+function render(){
+  const map = { home:renderHome, tl:renderTL, fam:renderFam, me:renderMe };
+  $('screen').innerHTML = map[state.tab]();
+  if(state.tab === 'home') applyCardOrder();
+  $('screen').scrollTop = 0;
+  $('fab-slot').innerHTML = state.tab==='tl' && !$('overlay').innerHTML
+    ? '<div class="fab" onclick="openAddMenu()">＋</div>' : '';
+  $('phone').classList.toggle('big', state.big);
+  renderTabbar();
+}
+function setPerson(id){ state.person = id; render(); }
+function setF(k,v){ state[k] = v; render(); }
+
+/* ============================================================================
+   5. 首页
+   ============================================================================ */
+function renderHome(){
+  const list = state.person==='all' ? DB.persons : [P(state.person)].filter(Boolean);
+  const withMeds = list.map(p=>({ p, ms:activeMeds(p) })).filter(x=>x.ms.length);
+  const todos = DB.todos.filter(t=> state.person==='all' || t.pid===state.person);
+
+  return `
+  <div class="navbar"><div class="title">首页</div>${capsule()}</div>
+  <div class="page">
+    <div class="hero">
+      <div>
+        <div class="fam">${DB.family.name}</div>
+        <div class="sub">邀请码 ${DB.family.code} · ${DB.persons.length} 位成员${DB.pending.length?` · ${DB.pending.length} 待审批`:''}</div>
+      </div>
+      <div class="invite" onclick="openFamily()">＋ 邀请</div>
+    </div>
+
+    <div class="avatars">
+      <div class="av ${state.person==='all'?'sel':''}" onclick="setPerson('all')">
+        <div class="b" style="background:#8B93A1">全</div>
+        <div class="n ${state.person==='all'?'on':''}">全部</div>
+      </div>
+      ${DB.persons.map(p=>`
+        <div class="av ${state.person===p.id?'sel':''}" onclick="setPerson('${p.id}')">
+          <div class="b" style="background:${p.color}">${p.ini}</div>
+          <div class="n ${state.person===p.id?'on':''}">${p.name}</div>
+        </div>`).join('')}
+    </div>
+
+    ${DB.pending.length ? `
+      <div class="card" style="background:#FFFBEB;border:1px solid #FDE68A" onclick="openFamily()">
+        <div class="row" style="padding:2px 0">
+          <div class="ic" style="background:#FEF3C7;color:#B45309">待</div>
+          <div class="tx"><b>有 ${DB.pending.length} 位成员待审批</b>
+            <span>${DB.pending.map(x=>x.name+'（'+x.rel+'）').join('、')}</span></div>
+          <div class="go">›</div>
+        </div>
+      </div>` : ''}
+
+    <div class="card" ${cardAttr('meds')}>
+      <div class="sec-title"><h3><span class="bar"></span>今天要吃的药</h3>
+        <span class="more">长按卡片可排序</span></div>
+      ${withMeds.length ? withMeds.map((x,i)=>`
+        ${i?'<div class="hr"></div>':''}
+        <div class="med-person">
+          <div class="ph"><b>${x.p.name}</b><span>${calcAge(x.p.birth)} 岁 · ${x.p.rel}</span></div>
+          ${['morning','noon','evening'].map(sl=>{
+            const l = x.ms.filter(md=>(md.slots||[]).includes(sl));
+            if(!l.length) return '';
+            const k = sl==='morning'?'':sl==='noon'?'noon':'eve';
+            return `<div class="slot"><div class="tag ${k}">${SLOT[sl]}</div>
+              <div class="items" style="flex:1">${l.map(md=>
+                `<div class="pill">${md.n}<em>${md.sp}</em>${md.end?'<i class="short">短期</i>':''}</div>`).join('')}</div></div>`;
+          }).join('')}
+        </div>`).join('')
+      : '<div class="muted" style="padding:8px 0">该成员暂无在服用的药</div>'}
+      <div class="addline" onclick="openPersonPicker('meds')">＋ 添加用药</div>
+    </div>
+
+    <div class="card" ${cardAttr('todos')}>
+      <div class="sec-title"><h3><span class="bar"></span>今日待办</h3>
+        <span class="more">${todos.filter(t=>!t.done).length} 项未完成</span></div>
+      ${todos.length ? todos.map((t,i)=>{
+        const p = P(t.pid);
+        const c = t.done ? '#22C55E' : t.cls==='bad'?'#EF4444':t.cls==='warn'?'#F97316':'#9CA3AF';
+        return `${i?'<div class="hr"></div>':''}
+        <div class="todo">
+          <div class="dot" style="background:${c}"></div>
+          <div class="tx"><b class="${t.done?'done':''}">${t.title}</b>
+            <span>${p.name||'—'}${p.rel?' · '+p.rel:''} · ${t.note}</span></div>
+          <div class="due ${t.done?'ok':t.cls}">${t.done?'已完成':t.due}</div>
+          <div class="act ${t.done?'on':''}" onclick="toggleTodo('${t.id}')">${t.done?'✓':''}</div>
+        </div>`;
+      }).join('') : '<div class="muted" style="padding:8px 0">暂无待办</div>'}
+      <div class="addline" onclick="openTodoForm()">＋ 添加待办</div>
+    </div>
+
+    <div class="card emg-row" ${cardAttr('emg')} onclick="openEmergency('${state.person==='all'?(DB.persons[0]||{}).id:state.person}')">
+      <div class="ic">${icon('fam','#B91C1C',1.9)}</div>
+      <div class="tx"><b>紧急信息卡</b>
+        <span>血型 · 过敏 · 用药 · 联系人 &nbsp;|&nbsp; 一屏给医护看</span></div>
+      <div class="go">›</div>
+    </div>
+
+    <div class="card" ${cardAttr('quick')}>
+      <div class="sec-title"><h3><span class="bar"></span>快捷操作</h3></div>
+      <div class="opts">
+        <div class="opt" onclick="openAddMenu()">＋ 记一次病程</div>
+        <div class="opt" onclick="openVisitForm()">记就诊</div>
+        <div class="opt" onclick="openExamForm()">记检查 / 体检</div>
+        <div class="opt" onclick="openVaccineForm()">记疫苗</div>
+        <div class="opt" onclick="go('tl')">健康时间线</div>
+      </div>
+    </div>
+    <div style="height:8px"></div>
+  </div>`;
+}
+function activeMeds(p){
+  return (p.meds||[]).filter(md => !md.end || md.end >= TODAY);
+}
+function cardAttr(k){
+  return `data-card="${k}" onpointerdown="cardDown(event,'${k}')" onpointerup="cardUp()" onpointercancel="cardUp()"`;
+}
+function applyCardOrder(){
+  const page = $('screen').querySelector('.page');
+  if(!page) return;
+  const map = {};
+  [...page.querySelectorAll('[data-card]')].forEach(c=> map[c.dataset.card] = c);
+  if(Object.keys(map).length < 2) return;
+  state.order.forEach(k=>{ if(map[k]) page.appendChild(map[k]); });
+  // 把不在 order 里的卡片补到末尾（新增卡片时）
+  Object.keys(map).forEach(k=>{ if(state.order.indexOf(k) < 0) page.appendChild(map[k]); });
+}
+
+/* ---- 长按拖拽排序 ---- */
+let DRAG = null, PRESS = null, BLOCK_CLICK = false;
+function cardDown(e, key){
+  if(e.button !== undefined && e.button !== 0) return;
+  const el = e.currentTarget;
+  const y0 = e.clientY;
+  const cancel = ()=>{
+    clearTimeout(PRESS);
+    document.removeEventListener('pointermove', cancel);
+  };
+  document.addEventListener('pointermove', cancel);
+  PRESS = setTimeout(()=>{
+    DRAG = { el, key, grabY: y0 - el.getBoundingClientRect().top };
+    el.classList.add('dragging');
+    toast('拖动调整卡片顺序，松手放置', 1400);
+    document.addEventListener('pointermove', cardMove);
+    document.addEventListener('pointerup', cardUp, { once:true });
+  }, 380);
+}
+function cardMove(e){
+  if(!DRAG) return;
+  if(e.cancelable) e.preventDefault();
+  const el = DRAG.el;
+  const t = e.clientY - DRAG.grabY - el.offsetTop;
+  el.style.transform = 'translateY(' + t + 'px) scale(1.015)';
+  const sibs = [...el.parentNode.children].filter(x=> x!==el && x.hasAttribute('data-card'));
+  const mid = el.offsetTop + t + el.offsetHeight/2;
+  for(const s of sibs){
+    const sMid = s.offsetTop + s.offsetHeight/2;
+    const elFollowsS = !!(el.compareDocumentPosition(s) & Node.DOCUMENT_POSITION_FOLLOWING);
+    if(mid < sMid && elFollowsS){ el.parentNode.insertBefore(el, s); break; }
+    if(mid > sMid && !elFollowsS){ el.parentNode.insertBefore(s, el); break; }
+  }
+}
+function cardUp(){
+  if(!DRAG) return;
+  const el = DRAG.el;
+  el.style.transform = '';
+  el.classList.remove('dragging');
+  document.removeEventListener('pointermove', cardMove);
+  const keys = [...el.parentNode.children]
+    .filter(x=>x.hasAttribute('data-card')).map(x=>x.dataset.card);
+  state.order = keys;
+  DRAG = null;
+  BLOCK_CLICK = true;
+  setTimeout(()=>{ BLOCK_CLICK = false; }, 320);
+  toast('顺序已保存', 1000);
+}
+document.addEventListener('click', e=>{
+  if(BLOCK_CLICK){ e.stopPropagation(); e.preventDefault(); }
+}, true);
+function toggleTodo(id){
+  const t = DB.todos.find(x=>x.id===id);
+  t.done = !t.done;
+  t.note = t.done ? '已完成 ' + nowStr() : '未完成';
+  if(t.done) log('完成待办', (P(t.pid).name||'') + ' · ' + t.title, '✓');
+  render();
+}
+
+/* ============================================================================
+   6. 健康时间线
+   ============================================================================ */
+function typeChip(k){ state.fType = k; render(); }
+function onSearch(v){
+  state.q = v;
+  const box = $('tl-list'); if(box) box.innerHTML = tlListHTML();
+}
+function renderTL(){
+  const tChips = [{k:'all',t:'全部'}].concat(Object.keys(TYPE).map(k=>({k,t:TYPE[k].l})));
+  return `
+  <div class="navbar"><div class="title">健康时间线</div>${capsule()}</div>
+  <div class="page">
+    <div class="filters">
+      <div class="frow">
+        <div class="f ${state.person==='all'?'on':''}" onclick="setPerson('all')">全部成员</div>
+        ${DB.persons.map(p=>`<div class="f ${state.person===p.id?'on':''}"
+          onclick="setPerson('${p.id}')">${p.name}</div>`).join('')}
+      </div>
+      <div class="frow" style="margin-top:2px">
+        ${tChips.map(c=>`<div class="f ${state.fType===c.k?'on':''}"
+          onclick="typeChip('${c.k}')">${c.t}</div>`).join('')}
+      </div>
+      <div class="searchwrap">
+        <div class="search">${icon('search','#9CA3AF',2)}
+          <input placeholder="搜索症状、医院、检查项目…" value="${state.q||''}"
+            oninput="onSearch(this.value)"/></div>
+      </div>
+    </div>
+    <div id="tl-list">${tlListHTML()}</div>
+    <div style="height:10px"></div>
+  </div>`;
+}
+function tlListHTML(){
+  let list = DB.events
+    .filter(e=> state.person==='all' || e.pid===state.person)
+    .filter(e=> state.fType==='all' || e.type===state.fType);
+  if(state.q){
+    const q = state.q.toLowerCase();
+    list = list.filter(e=> (e.title+e.sub+(P(e.pid).name||'')).toLowerCase().includes(q));
+  }
+  list.sort((a,b)=> (b.ongoing?1:0)-(a.ongoing?1:0) || (a.date<b.date?1:-1));
+
+  if(!list.length)
+    return `<div class="card" style="text-align:center;color:#9CA3AF;padding:46px 14px;font-size:13px;line-height:1.7">
+      ${state.q?'没有匹配「'+state.q+'」的记录':'该筛选下暂无记录'}<br/>
+      <span style="font-size:12px">点右下 ＋ 可以补记一条</span></div>`;
+
+  const groups = {};
+  list.forEach(e=>{
+    const k = e.ongoing ? '进行中' : e.date.slice(0,7).replace('-','.');
+    (groups[k] = groups[k] || []).push(e);
+  });
+
+  return Object.keys(groups).map(k=>`
+    <div class="tl-month">${k==='进行中'?'● 进行中':k}</div>
+    <div class="tl">
+      ${groups[k].map(e=>{
+        const t = TYPE[e.type], p = P(e.pid);
+        return `<div class="ev ${e.ongoing?'on':''}" onclick="openEvent('${e.id}')">
+          <div class="badge" style="background:${t.b};color:${t.c}">${t.s}</div>
+          <div class="body">
+            <div class="r1"><b>${e.title}</b>
+              ${e.ongoing ? '<span class="ongoing">进行中</span>'
+                : `<span class="chip" style="background:${t.b};color:${t.c}">${t.l}</span>`}</div>
+            <div class="r2"><span class="who">${p.name||'—'}</span>·<span>${e.sub}</span>
+              ${e.ongoing?'':`<span>· ${e.date.slice(5).replace('-','.')}</span>`}</div>
+          </div>
+          <div class="arrow">›</div>
+        </div>`;
+      }).join('')}
+    </div>`).join('');
+}
+function openAddMenu(){
+  openActions([
+    { t:'补记一次病程（逐日填写）', fn:openRecord },
+    { t:'记录就诊', fn:openVisitForm },
+    { t:'记录检查 / 体检', fn:openExamForm },
+    { t:'记录疫苗', fn:openVaccineForm },
+    { t:'添加待办', fn:openTodoForm }
+  ]);
+}
+function openEvent(id){
+  const e = EV(id); if(!e) return;
+  if(e.type==='condition' && e.ref && DB.conditions[e.ref]) return openCondition(e.ref);
+  openEventDetail(id);
+}
+function openEventDetail(id){
+  const e = EV(id), p = P(e.pid), t = TYPE[e.type];
+  const rows = e.type==='visit' ? [
+    ['日期', e.date],
+    ['医院', e.title.split(' · ')[0] || '—'],
+    ['科室', e.title.split(' · ')[1] || '—'],
+    ['类型', '门诊'],
+    ['医生记录', '上呼吸道感染'],
+    ['附件', '病历本照片 1 张']
+  ] : e.type==='vaccine' ? [
+    ['接种日期', e.date],
+    ['疫苗', e.title],
+    ['机构', e.sub],
+    ['下一针', '2026-10-20（已生成待办）']
+  ] : [
+    ['日期', e.date],
+    ['项目', e.title],
+    ['类型', e.type==='checkup' ? '年度体检' : '化验'],
+    ['结论摘要', e.sub],
+    ['附件', '报告 3 页']
+  ];
+  openOverlay(`
+    ${navOverlay(t.l + '详情', 'closeOverlay()')}
+    <div class="screen" style="flex:1">
+      <div class="page">
+        <div class="card" style="display:flex;align-items:center;gap:12px">
+          <div class="badge" style="width:46px;height:46px;border-radius:13px;background:${t.b};color:${t.c};font-size:15px">${t.s}</div>
+          <div><div style="font-size:17px;font-weight:700">${e.title}</div>
+            <div class="muted" style="margin-top:4px">${p.name||'—'} · ${p.rel||''}</div></div>
+        </div>
+        <div class="card">
+          ${rows.map(r=>`<div class="kv"><div class="k">${r[0]}</div><div class="v">${r[1]}</div></div>`).join('')}
+        </div>
+        <div class="card">
+          <div class="sec-title"><h3><span class="bar"></span>附件</h3></div>
+          <div class="photo" style="width:88px;height:88px" onclick="openViewer('${e.title} 附件')">点开查看</div>
+        </div>
+        <div style="padding:4px 14px 22px;display:flex;gap:10px">
+          <div class="btn ghost" style="flex:1" onclick="eventMore('${e.id}')">更多操作</div>
+          <div class="btn primary" style="flex:1.4" onclick="openSummaryConfig('${e.pid}')">看医生摘要</div>
+        </div>
+      </div>
+    </div>`);
+}
+function eventMore(id){
+  openActions([
+    { t:'编辑这条记录', fn:()=>toast('Demo：表单同上') },
+    { t:'删除这条记录', danger:true, fn:()=>{
+        DB.events = DB.events.filter(x=>x.id!==id);
+        log('删除记录', '时间线记录', '删');
+        closeOverlay(); render(); toast('已删除');
+      } }
+  ]);
+}
+
+/* ============================================================================
+   7. 病程详情
+   ============================================================================ */
+function openCondition(cid){
+  const c = DB.conditions[cid]; if(!c) return;
+  const p = P(c.pid);
+  openOverlay(`
+    ${navOverlay('病程详情', 'closeOverlay()')}
+    <div class="screen" style="flex:1">
+      <div class="page">
+        <div style="padding:4px 18px 12px">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="font-size:21px;font-weight:700">${c.title}</span>
+            ${c.ongoing ? '<span class="ongoing" style="font-size:11px;padding:2px 8px">进行中</span>'
+              : '<span class="chip" style="background:#F2F5F8;color:#6B7280;font-size:11px">已结束</span>'}
+          </div>
+          <div style="font-size:12.5px;color:#9CA3AF;margin-top:5px">
+            ${p.name} · ${p.sex} ${calcAge(p.birth)} 岁 · ${p.blood} 型 &nbsp;|&nbsp;
+            ${c.start} 开始 · ${c.events.length} 条记录</div>
+        </div>
+
+        <div class="card">
+          <div class="sec-title"><h3><span class="bar"></span>逐日记录</h3>
+            <span class="more">按 occurred_at 排序</span></div>
+          <div class="steps">
+            ${c.events.map((ev,i)=>{
+              const d = ev.date.slice(5).replace('-','.');
+              const cls = ev.type==='empty' ? 'empty' : (ev.sev===3 ? 'alert' : '');
+              const tag = ev.type==='medication' ? '<span style="color:#0E9F6E">药</span>'
+                : ev.type==='symptom' ? '<span style="color:#F97316">症</span>' : '';
+              return `<div class="step ${cls}">
+                <div class="rail"><div class="pt"></div><div class="line"></div></div>
+                <div class="c">
+                  <div class="d">${d}${ev.time?' '+ev.time:''} ${tag?'· '+tag:''}</div>
+                  <div class="txt">${ev.text}
+                    ${ev.sevT?`<span class="sev s${ev.sev}">${ev.sevT}</span>`:''}
+                    ${ev.temp?`<span class="temp">体温 ${ev.temp}</span>`:''}</div>
+                  ${ev.photo?`<div class="photo" onclick="openViewer('${ev.photo}')">照片附件</div>`:''}
+                  <div class="edit" onclick="editStep('${cid}',${i})">编辑 / 删除</div>
+                </div>
+              </div>`;
+            }).join('')}
+          </div>
+          <div class="addline" onclick="insertStep('${cid}')">＋ 插入一天</div>
+        </div>
+
+        <div class="card">
+          <div class="kv"><div class="k">本次用药</div><div class="v">${c.medSummary}
+            <span class="ed" onclick="editCond('${cid}','med')">修改</span></div></div>
+          <div class="kv"><div class="k">是否就诊</div><div class="v">${c.visited}
+            <span class="ed" onclick="editCond('${cid}','visit')">修改</span></div></div>
+          <div class="kv"><div class="k">基础情况</div><div class="v">
+            ${p.chronic.map(x=>x.n).join(' · ')||'无'}
+            ${p.allergy.length?`<br><span style="color:#C2410C">过敏：${p.allergy.map(x=>x.n).join('、')}</span>`:''}
+          </div></div>
+        </div>
+
+        <div style="padding:8px 14px 22px;display:flex;gap:10px">
+          <div class="btn plain" style="flex:1" onclick="endCondition('${cid}')">
+            ${c.ongoing?'结束本次病程':'重新开启'}</div>
+          <div class="btn primary" style="flex:1.8" onclick="openSummaryConfig('${c.pid}')">生成医生摘要 →</div>
+        </div>
+      </div>
+    </div>`);
+}
+function editStep(cid,i){
+  const c = DB.conditions[cid], ev = c.events[i];
+  openActions([
+    { t:'编辑这一天', fn:()=>openForm({
+        title:'编辑 ' + ev.date, submit:'保存',
+        fields:[
+          { k:'date', l:'日期', t:'date', val:ev.date, req:true },
+          { k:'time', l:'时间（可空）', t:'text', val:ev.time, ph:'如 15:30' },
+          { k:'text', l:'内容', t:'text', val:ev.text, req:true, ph:'如 咳嗽 轻' },
+          { k:'temp', l:'体温（可空）', t:'text', val:ev.temp, ph:'如 38.2℃' }
+        ]}, v=>{
+          ev.date = v.date; ev.time = v.time; ev.text = v.text; ev.temp = v.temp;
+          if(!v.text.includes('加重')) ev.sev = 1, ev.sevT = '';
+          c.events.sort((a,b)=> a.date<b.date?-1:1);
+          log('修改病程记录', (P(c.pid).name||'') + ' · ' + c.title + ' ' + v.date, '改');
+          openCondition(cid); toast('已保存');
+        }) },
+    { t:'删除这一天', danger:true, fn:()=>{
+        c.events.splice(i,1);
+        log('删除病程记录', (P(c.pid).name||'') + ' · ' + c.title, '删');
+        openCondition(cid); toast('已删除');
+      } }
+  ]);
+}
+function insertStep(cid){
+  const c = DB.conditions[cid];
+  openForm({ title:'插入一天', submit:'插入',
+    fields:[
+      { k:'date', l:'日期', t:'date', val:TODAY, req:true },
+      { k:'text', l:'内容', t:'text', req:true, ph:'如 咳嗽 轻 / 服用 XX / —（无记录）' },
+      { k:'temp', l:'体温（可空）', t:'text', ph:'如 38.2℃' }
+    ]}, v=>{
+      c.events.push({ date:v.date, time:'', temp:v.temp,
+        type: v.text.indexOf('—')===0 ? 'empty' : (v.text.indexOf('服用')===0 ? 'medication' : 'symptom'),
+        text:v.text, sev:2, sevT:'' });
+      c.events.sort((a,b)=> a.date<b.date?-1:1);
+      log('补记一天', (P(c.pid).name||'') + ' · ' + c.title + ' ' + v.date, '记');
+      openCondition(cid); toast('已插入');
+    });
+}
+function editCond(cid, kind){
+  const c = DB.conditions[cid];
+  openForm({ title: kind==='med' ? '修改本次用药' : '修改就诊状态', submit:'保存',
+    fields: kind==='med'
+      ? [{ k:'v', l:'本次用药汇总', t:'text', val:c.medSummary, req:true,
+           hint:'这里记「这次生病吃的药」。长期服用的药在健康档案里，两者不混。' }]
+      : [{ k:'v', l:'就诊情况', t:'chips', single:true, opts:['未就诊','门诊','急诊','住院','已复诊'], val:c.visited }]
+  }, v=>{
+    if(kind==='med') c.medSummary = v.v; else c.visited = v.v;
+    openCondition(cid); toast('已保存');
+  });
+}
+function endCondition(cid){
+  const c = DB.conditions[cid];
+  if(c.ongoing){
+    confirmBox('确认结束本次病程？结束后归档进历史，仍可查看', ()=>{
+      c.ongoing = false;
+      const e = DB.events.find(x=>x.ref===cid); if(e) e.ongoing = false;
+      log('结束病程', (P(c.pid).name||'') + ' · ' + c.title, '✓');
+      openCondition(cid); toast('已结束并归档');
+    });
+  } else {
+    c.ongoing = true;
+    const e = DB.events.find(x=>x.ref===cid); if(e) e.ongoing = true;
+    log('重新开启病程', (P(c.pid).name||'') + ' · ' + c.title, '改');
+    openCondition(cid); toast('已重新开启');
+  }
+}
+
+/* ============================================================================
+   8. 医生摘要
+   ============================================================================ */
+let SUM = { pid:null, sel:{} };
+function openSummaryConfig(pid){
+  SUM.pid = pid;
+  if(!SUM.sel[pid]) SUM.sel[pid] = { surgery:true, history:true, exam:true, chronic:true };
+  drawSummaryConfig();
+}
+function drawSummaryConfig(){
+  const pid = SUM.pid, s = SUM.sel[pid], p = P(pid);
+  const opts = [
+    { k:'surgery', t:'手术史', d: p.surgery.length ? p.surgery.map(x=>x.d.slice(0,4)+' '+x.n).join('、') : '暂无' },
+    { k:'history', t:'相关历史病程', d:'2026.03 类似咳嗽 · 5 天（智能预选）' },
+    { k:'exam',    t:'近期检查报告', d:'2026.06 年度体检 · 3 份' },
+    { k:'chronic', t:'基础病明细',   d: p.chronic.map(x=>x.n).join(' / ') || '暂无' }
+  ];
+  openOverlay(`
+    ${navOverlay('生成医生摘要', 'closeOverlay()')}
+    <div class="screen" style="flex:1">
+      <div class="page">
+        <div class="card" style="background:#E7F6F0;box-shadow:none">
+          <div style="font-size:13.5px;font-weight:600;color:#0B8057">自动必带（不可取消）</div>
+          <div class="muted" style="margin-top:6px;line-height:1.7">
+            过敏史 · 基础病 · 长期用药 · 年龄性别血型 · 本次病程与本次用药
+          </div>
+        </div>
+        <div class="card">
+          <div class="sec-title"><h3><span class="bar"></span>可选择加入</h3>
+            <span class="more">按相关性预选</span></div>
+          ${opts.map(o=>`
+            <div class="row" onclick="togSum('${o.k}')">
+              <div class="ic" style="background:${s[o.k]?'#E7F6F0':'#F2F5F8'};
+                color:${s[o.k]?'#0B8057':'#9CA3AF'}">${s[o.k]?'✓':''}</div>
+              <div class="tx"><b>${o.t}</b><span>${o.d}</span></div>
+              <div class="sw ${s[o.k]?'on':''}"><i></i></div>
+            </div>`).join('')}
+        </div>
+        <div class="card">
+          <div class="muted" style="line-height:1.75">
+            生成后进入全屏「医生模式」，可随时返回自己的详细记录。<br/>
+            下次复诊会记住本次勾选，一键复用。
+          </div>
+        </div>
+        <div style="padding:6px 14px 22px">
+          <div class="btn primary" onclick="openSummary('${pid}')">生成并全屏出示</div>
+        </div>
+      </div>
+    </div>`);
+}
+function togSum(k){ SUM.sel[SUM.pid][k] = !SUM.sel[SUM.pid][k]; drawSummaryConfig(); }
+
+function openSummary(pid){
+  const p = P(pid), s = SUM.sel[pid] || { surgery:true, history:true, exam:true, chronic:true };
+  let c = null;
+  Object.keys(DB.conditions).forEach(k=>{ if(DB.conditions[k].pid===pid && DB.conditions[k].ongoing) c = DB.conditions[k]; });
+  const course = c ? c.events.filter(e=>e.type!=='empty')
+    .map(e=> e.date.slice(5).replace('-','.') + ' ' + e.text.replace('服用 ','服')).join(' → ') : '—';
+  const allergy = p.allergy.length ? p.allergy.map(x=>x.n).join('、') : '无已知过敏';
+  const longMeds = (p.meds||[]).filter(x=> !x.end);
+  const shortMeds = (p.meds||[]).filter(x=> x.end && x.end >= TODAY);
+  const meds = longMeds.length
+    ? longMeds.map(x=>`<div>${x.n} ${x.sp||''} / ${x.fq}</div>`).join('') : '<div>无</div>';
+  const chronic = p.chronic.length
+    ? p.chronic.map(x=>x.n+(x.d?`（${x.d.slice(0,4)}）`:'')).join(' &nbsp;·&nbsp; ') : '无';
+
+  openOverlay(`
+  <div class="doc">
+    <div class="doc-hd">
+      <div class="t">本 次 就 诊 摘 要</div>
+      <div class="n">${p.name} · ${p.sex} ${calcAge(p.birth)} 岁 · ${p.blood} 型</div>
+      <div class="m">生成于 ${nowStr()} · 内容来自家庭健康档案</div>
+    </div>
+    <div class="doc-bd">
+      <div class="dsec"><div class="allergy"><div class="lb">⚠ 过敏史</div>
+        <div class="ct">${allergy}</div></div></div>
+      <div class="dsec"><div class="lb">基础病</div><div class="ct">${chronic}</div></div>
+      <div class="dsec"><div class="lb">长期用药</div><div class="ct">${meds}</div></div>
+      ${shortMeds.length ? `<div class="dsec"><div class="lb">近期在服（短期）</div>
+        <div class="ct" style="font-size:15.5px">${shortMeds.map(x=>
+          x.n + (x.sp?' '+x.sp:'') + '（' + fmtMD(x.start) + ' → ' + fmtMD(x.end) + '）').join('、')}</div></div>` : ''}
+      ${s.surgery && p.surgery.length ? `<div class="dsec"><div class="lb">手术史</div>
+        <div class="ct">${p.surgery.map(x=>x.d.slice(0,4)+' '+x.n).join('、')}</div></div>` : ''}
+      <div class="dsec"><div class="lb">本次病程</div><div class="ct dline">${course}</div></div>
+      <div class="dsec"><div class="lb">本次用药</div><div class="ct">${c?c.medSummary:'—'}</div></div>
+      ${s.history ? `<div class="dsec"><div class="lb">相关历史</div>
+        <div class="ct" style="font-size:15.5px">2026.03 类似咳嗽（5 天，已结束）</div></div>` : ''}
+      ${s.exam ? `<div class="dsec"><div class="lb">近期检查</div>
+        <div class="ct" style="font-size:15.5px">2026.06 年度体检 · 血常规 / 生化 / 胸部 CT</div></div>` : ''}
+    </div>
+    <div class="doc-ft">
+      <div class="btn ghost" style="flex:1" onclick="closeOverlay()">返回</div>
+      <div class="btn plain" style="flex:1" onclick="openSummaryConfig('${pid}')">调整</div>
+      <div class="btn primary" style="flex:1.2" onclick="toast('二期：导出图片 / PDF 发给医生')">导出</div>
+    </div>
+  </div>`);
+}
+
+/* ============================================================================
+   9. 成员档案
+   ============================================================================ */
+function openArchive(pid){
+  const p = P(pid);
+  const block = (title, arr, render, addKey, al) => `
+    <div class="card">
+      <div class="sec-title"><h3><span class="bar" style="${al?'background:#B91C1C':''}"></span>${title}</h3>
+        <span class="more">${arr.length} 条</span></div>
+      ${arr.length ? arr.map(render).join('') : '<div class="muted" style="padding:6px 0">暂无记录</div>'}
+      <div class="addline" onclick="ITEM_BACK='archive';addItem('${pid}','${addKey}')">＋ 添加</div>
+    </div>`;
+
+  openOverlay(`
+    ${navOverlay('健康档案', 'closeOverlay()')}
+    <div class="screen" style="flex:1">
+      <div class="page">
+        <div style="padding:6px 18px 4px;display:flex;align-items:center;gap:13px">
+          <div style="width:56px;height:56px;border-radius:18px;background:${p.color};color:#fff;
+            display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:600">${p.ini}</div>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:19px;font-weight:700">${p.name}
+              <span style="font-size:11.5px;font-weight:600;margin-left:6px;padding:2px 7px;border-radius:6px;
+                color:${p.ptype==='self'?'#0B8057':'#B45309'};
+                background:${p.ptype==='self'?'#E7F6F0':'#FEF3C7'}">
+                ${p.ptype==='self'?'本人档案':'代管档案'}</span></div>
+            <div class="muted" style="margin-top:5px">${p.rel} · ${p.sex} · ${calcAge(p.birth)} 岁 · ${p.blood} 型</div>
+          </div>
+          <div style="color:#CBD2DA;font-size:17px;cursor:pointer" onclick="openPersonForm('${pid}')">✎</div>
+        </div>
+
+        ${p.ptype==='managed' ? `<div class="card" style="background:#FFFBEB;box-shadow:none">
+          <div style="display:flex;gap:9px;align-items:flex-start">
+            <div style="color:#B45309;font-size:14px;font-weight:700">授</div>
+            <div style="flex:1">
+              <div style="font-size:13.5px;font-weight:600;color:#B45309">代管授权</div>
+              <div class="muted" style="margin-top:5px;line-height:1.6">
+                代管人 ${p.custodian} · ${p.consent}<br/>
+                《个人信息保护法》第 29 条：处理敏感个人信息须取得单独同意</div>
+            </div>
+          </div></div>` : ''}
+
+        ${block('⚠ 过敏史', p.allergy,
+          x=>`<div class="kv"><div class="k">${x.n}</div><div class="v" style="color:#B91C1C">
+            <span class="acts"><span onclick="ITEM_BACK='archive';editItem('${pid}','allergy','${x.n}')">编辑</span><span class="del" onclick="delItem('${pid}','allergy','${x.n}')">删除</span></span>
+            ${x.ty} · ${x.sev}${x.rx?' · '+x.rx:''}</div></div>`,
+          'allergy', true)}
+
+        ${block('基础病', p.chronic,
+          x=>`<div class="kv"><div class="k">${x.d||'—'}</div><div class="v">
+            <span class="acts"><span onclick="ITEM_BACK='archive';editItem('${pid}','chronic','${x.n}')">编辑</span><span class="del" onclick="delItem('${pid}','chronic','${x.n}')">删除</span></span>
+            ${x.n}</div></div>`,
+          'chronic')}
+
+        ${block('用药', p.meds,
+          x=>`<div class="kv"><div class="k">${(x.slots||[]).map(s=>SLOT[s]).join('/')||'—'}</div>
+            <div class="v">
+            <span class="acts"><span onclick="ITEM_BACK='archive';editItem('${pid}','meds','${x.n}')">编辑</span><span class="del" onclick="delItem('${pid}','meds','${x.n}')">删除</span></span>
+            <b>${x.n}</b> ${x.sp||''}${x.dos?' · '+x.dos:''} · ${x.fq}
+            <div class="period ${x.end?'short':''}">
+              ${x.end ? '短期 · '+fmtMD(x.start)+' → '+fmtMD(x.end) : '长期服用'}</div>
+            </div></div>`,
+          'meds')}
+
+        ${block('手术史', p.surgery,
+          x=>`<div class="kv"><div class="k">${x.d||'—'}</div><div class="v">
+            <span class="acts"><span onclick="ITEM_BACK='archive';editItem('${pid}','surgery','${x.n}')">编辑</span><span class="del" onclick="delItem('${pid}','surgery','${x.n}')">删除</span></span>
+            ${x.n}${x.h?'<br><span class="muted">'+x.h+'</span>':''}</div></div>`,
+          'surgery')}
+
+        <div class="card">
+          <div class="sec-title"><h3><span class="bar"></span>紧急联系人</h3>
+            <span class="more">${p.contacts.length} 人</span></div>
+          ${p.contacts.length ? p.contacts.map(x=>`
+            <div class="kv"><div class="k">${x.rel}</div>
+              <div class="v">
+                <span class="acts"><span onclick="ITEM_BACK='archive';editItem('${pid}','contacts','${x.n}')">编辑</span><span class="del" onclick="delItem('${pid}','contacts','${x.n}')">删除</span></span>
+                ${x.n} · ${x.phone}</div></div>`).join('')
+            : '<div class="muted" style="padding:6px 0">暂无记录</div>'}
+          <div class="addline" onclick="addItem('${pid}','contacts')">＋ 添加</div>
+        </div>
+
+        <div class="card">
+          <div class="sec-title"><h3><span class="bar"></span>历史病程</h3>
+            <span class="more">已归档</span></div>
+          ${DB.events.filter(e=>e.pid===pid && e.type==='condition' && !e.ongoing).map(e=>
+            `<div class="row" onclick="openCondition('${e.ref||''}')">
+              <div class="ic" style="background:#FFF1E7;color:#C2410C">病</div>
+              <div class="tx"><b>${e.title}</b><span>${e.date} · ${e.sub}</span></div>
+              <div class="go">›</div></div>`).join('')
+            || '<div class="muted" style="padding:6px 0">暂无历史病程</div>'}
+        </div>
+
+        <div style="padding:6px 14px 22px;display:flex;gap:10px">
+          <div class="btn ghost" style="flex:1" onclick="openEmergency('${pid}')">紧急信息卡</div>
+          <div class="btn primary" style="flex:1.4" onclick="openSummaryConfig('${pid}')">医生摘要（全屏）</div>
+        </div>
+      </div>
+    </div>`);
+}
+function delItem(pid, key, name){
+  confirmBox('确认删除「' + name + '」？', ()=>doDelItem(pid, key, name));
+}
+function doDelItem(pid, key, name){
+  const p = P(pid);
+  if(!p[key]) return;
+  p[key] = p[key].filter(x=>x.n!==name);
+  log('删除档案项', p.name + ' · ' + name, '删');
+  renderTabbar();
+  if(ITEM_BACK === 'emergency') openEmergency(pid); else openArchive(pid);
+  toast('已删除');
+}
+const ITEM_CFG = {
+  allergy:{ title:'添加过敏史', submit:'保存',
+    tip:'过敏史在医生摘要中永远排最前，务必准确填写',
+    fields:[
+      { k:'n', l:'过敏原', t:'text', req:true, ph:'如 青霉素 / 海鲜' },
+      { k:'ty', l:'类型', t:'chips', single:true, opts:['药物','食物','其他'], val:'药物' },
+      { k:'sev', l:'严重程度', t:'chips', single:true, opts:['轻微','中等','严重'], val:'中等' },
+      { k:'rx', l:'过敏反应', t:'text', ph:'如 皮疹、呼吸困难' }
+    ]},
+  chronic:{ title:'添加基础病', submit:'保存', fields:[
+      { k:'n', l:'疾病名称', t:'text', req:true, ph:'如 高血压' },
+      { k:'d', l:'确诊时间', t:'text', ph:'如 2015-03' }
+    ]},
+  surgery:{ title:'添加手术史', submit:'保存', fields:[
+      { k:'n', l:'手术名称', t:'text', req:true, ph:'如 胆囊切除' },
+      { k:'d', l:'手术时间', t:'text', ph:'如 2018-05' },
+      { k:'h', l:'医院', t:'text', ph:'如 市第一人民医院' }
+    ]},
+  meds:{ title:'添加用药', submit:'保存',
+    tip:'长期服用的药会一直出现在首页；短期药（如感冒药吃 3 天）填了结束日期，到期后自动从首页移除，但处方记录仍在。',
+    fields:[
+      { k:'n', l:'药品名称', t:'text', req:true, ph:'如 氨氯地平 / 复方感冒灵' },
+      { k:'sp', l:'规格', t:'text', ph:'如 5mg / 1 袋' },
+      { k:'dos', l:'单次剂量', t:'text', ph:'如 1 片' },
+      { k:'fq', l:'频次', t:'chips', single:true, opts:['每日 1 次','每日 2 次','每日 3 次','按需'], val:'每日 1 次' },
+      { k:'slots', l:'服用时段', t:'chips', req:true, opts:['早','中','晚','睡前'], val:['早'],
+        hint:'首页「今天要吃的药」按此时段分组' },
+      { k:'start', l:'开始日期', t:'date', val:TODAY },
+      { k:'end', l:'结束日期', t:'date',
+        hint:'留空 = 长期服用 · 填了就按短期药处理（如 3 天疗程）' }
+    ]},
+  contacts:{ title:'添加紧急联系人', submit:'保存',
+    tip:'手机号加密存储，不产生公开可访问链接',
+    fields:[
+      { k:'n', l:'姓名', t:'text', req:true },
+      { k:'rel', l:'关系', t:'text', req:true, ph:'如 女儿' },
+      { k:'phone', l:'手机号', t:'num', req:true, ph:'00000000000' }
+    ]}
+};
+const SLOT_MAP = { '早':'morning','中':'noon','晚':'evening','睡前':'bedtime' };
+function medFromForm(v){
+  return { n:v.n, sp:v.sp, dos:v.dos, fq:v.fq,
+    slots:(Array.isArray(v.slots)?v.slots:[v.slots]).map(x=>SLOT_MAP[x]).filter(Boolean),
+    start:v.start || '', end:v.end || '' };
+}
+function maskPhone(s){
+  s = String(s || '');
+  return /^\d{11}$/.test(s) ? s.replace(/(\d{3})\d{4}(\d{2})/, '$1****$2') : s;
+}
+function itemCopy(key){ return JSON.parse(JSON.stringify(ITEM_CFG[key])); }
+
+function addItem(pid, key){
+  openForm(itemCopy(key), v=>{
+    const p = P(pid);
+    if(!p[key]) p[key] = [];
+    if(key==='allergy')  p.allergy.push({ n:v.n, ty:v.ty, sev:v.sev, rx:v.rx });
+    if(key==='chronic')  p.chronic.push({ n:v.n, d:v.d });
+    if(key==='surgery')  p.surgery.push({ n:v.n, d:v.d, h:v.h });
+    if(key==='meds')     p.meds.push(medFromForm(v));
+    if(key==='contacts') p.contacts.push({ n:v.n, rel:v.rel, phone:maskPhone(v.phone), pr:p.contacts.length+1 });
+    log('添加档案项', p.name + ' · ' + v.n, '添');
+    renderTabbar();
+    if(ITEM_BACK === 'emergency') openEmergency(pid); else openArchive(pid);
+    toast('已保存');
+  });
+}
+let ITEM_BACK = 'archive';
+function editItem(pid, key, name){
+  const p = P(pid);
+  const item = (p[key] || []).find(x=>x.n===name);
+  if(!item){ toast('找不到这条记录'); return; }
+  const cfg = itemCopy(key);
+  cfg.title = cfg.title.replace('添加', '编辑');
+  cfg.submit = '保存';
+  cfg.tip = key==='meds'
+    ? '结束日期留空 = 长期服用；填了就是短期药，到期后从首页移除。'
+    : (cfg.tip || '');
+  cfg.fields.forEach(f=>{
+    if(f.k === 'slots') f.val = (item.slots || []).map(s=>SLOT[s]).filter(Boolean);
+    else if(item[f.k] !== undefined) f.val = item[f.k];
+  });
+  openForm(cfg, v=>{
+    if(key==='allergy')  Object.assign(item, { n:v.n, ty:v.ty, sev:v.sev, rx:v.rx });
+    if(key==='chronic')  Object.assign(item, { n:v.n, d:v.d });
+    if(key==='surgery')  Object.assign(item, { n:v.n, d:v.d, h:v.h });
+    if(key==='meds')     Object.assign(item, medFromForm(v));
+    if(key==='contacts') Object.assign(item, { n:v.n, rel:v.rel, phone:maskPhone(v.phone) });
+    log('修改档案项', p.name + ' · ' + v.n, '改');
+    renderTabbar();
+    if(ITEM_BACK === 'emergency') openEmergency(pid); else openArchive(pid);
+    toast('已保存');
+  });
+}
+function openPersonPicker(key){
+  if(!DB.persons.length) return openPersonForm();
+  openActions(DB.persons.map(p=>({
+    t:'给「' + p.name + '」添加' + (key==='meds' ? '用药' : '记录'),
+    fn:()=>addItem(p.id, key)
+  })).concat([{ t:'添加新成员', fn:()=>openPersonForm() }]));
+}
+
+/* ============================================================================
+   10. 家人页
+   ============================================================================ */
+function renderFam(){
+  return `
+  <div class="navbar"><div class="title">家人</div>${capsule()}</div>
+  <div class="page">
+    <div style="padding:6px 18px 0;font-size:12px;color:#9CA3AF;line-height:1.65">
+      权限由 person_access 判定，不由 role 决定。<br/>代管档案须归属人本人授权。
+    </div>
+    ${DB.pending.length ? `
+      <div class="card" style="background:#FFFBEB;border:1px solid #FDE68A">
+        <div class="sec-title"><h3 style="color:#B45309"><span class="bar" style="background:#F59E0B"></span>待审批</h3>
+          <span class="more" style="color:#B45309">${DB.pending.length} 人</span></div>
+        ${DB.pending.map(q=>`
+          <div class="pend">
+            <div class="b">${q.name.slice(-1)}</div>
+            <div style="flex:1;min-width:0">
+              <b style="font-size:14.5px">${q.name}</b>
+              <div class="muted" style="margin-top:3px">${q.rel} · ${q.phone} · 由 ${q.by} 邀请 ${q.at}</div>
+            </div>
+            <div style="display:flex;gap:7px">
+              <div class="mini-btn ok" onclick="approve('${q.id}',1)">同意</div>
+              <div class="mini-btn no" onclick="approve('${q.id}',0)">拒绝</div>
+            </div>
+          </div>`).join('')}
+      </div>` : ''}
+
+    ${DB.persons.map(p=>{
+      const tags = [
+        ...p.allergy.map(x=>`<span class="tg al">过敏 · ${x.n}</span>`),
+        ...p.chronic.map(x=>`<span class="tg ch">${x.n}</span>`),
+        ...p.meds.slice(0,2).map(x=>`<span class="tg md">${x.n}</span>`),
+        ...p.surgery.map(x=>`<span class="tg su">${x.n}</span>`)
+      ];
+      const cnt = DB.events.filter(e=>e.pid===p.id).length;
+      return `<div class="pcard" onclick="openArchive('${p.id}')">
+        <div class="b" style="background:${p.color}">${p.ini}</div>
+        <div class="i">
+          <b>${p.name}</b>
+          <p>${p.rel||'—'} · ${p.sex} · ${calcAge(p.birth)} 岁 · ${p.blood} 型 · ${cnt} 条记录${p.ptype==='managed'?' · 代管':''}</p>
+          <div class="tags">${tags.length?tags.join(''):'<span class="tg">暂无档案内容</span>'}</div>
+        </div>
+        <div style="color:#CBD2DA;font-size:18px">›</div>
+      </div>`;
+    }).join('')}
+
+    <div class="btn ghost wide" style="margin-top:6px" onclick="openPersonForm()">＋ 添加家庭成员</div>
+    <div style="height:8px"></div>
+  </div>`;
+}
+function approve(id, ok){
+  const i = DB.pending.findIndex(x=>x.id===id);
+  const q = DB.pending[i];
+  if(ok){
+    DB.persons.push({
+      id: uid('p'), name:q.name, rel:q.rel, sex:'未知', birth:'', blood:'未知',
+      color:'#8B93A1', ini:q.name.slice(-1), ptype:'self', custodian:'', consent:'',
+      allergy:[], chronic:[], surgery:[], meds:[],
+      contacts:[{ n:q.name, rel:'本人', phone:q.phone, pr:1 }]
+    });
+    log('同意加入家庭', q.name + '（' + q.rel + '）', '人');
+    toast('已同意 ' + q.name + ' 加入');
+  } else {
+    log('拒绝加入申请', q.name, '拒');
+    toast('已拒绝');
+  }
+  DB.pending.splice(i,1);
+  render();
+}
+function openPersonForm(pid){
+  const p = pid ? P(pid) : null;
+  openForm({
+    title: p ? '编辑成员' : '添加家庭成员',
+    submit: p ? '保存' : '添加',
+    tip: p ? '' : '若为老人 / 小孩代管档案，请勾选「已获本人（或监护人）同意」',
+    fields: [
+      { k:'name', l:'姓名', t:'text', req:true, val:p?p.name:'' },
+      { k:'rel', l:'与我的关系', t:'chips', single:true, req:true,
+        opts:['本人','父亲','母亲','配偶','儿子','女儿','其他'], val:p?p.rel:'' },
+      { k:'sex', l:'性别', t:'chips', single:true, opts:['男','女'], val:p?p.sex:'' },
+      { k:'birth', l:'出生日期', t:'date', val:p?p.birth:'' },
+      { k:'blood', l:'血型', t:'chips', single:true, opts:['A','B','O','AB','未知'], val:p?p.blood:'' },
+      { k:'ptype', l:'档案类型', t:'chips', single:true, req:true, opts:['本人档案','代管档案'],
+        val: p ? (p.ptype==='self'?'本人档案':'代管档案') : '代管档案' },
+      { k:'consent', l:'代管授权', t:'chips', single:true, opts:['已获本人（或监护人）同意'], val:'' }
+    ]
+  }, v=>{
+    const data = {
+      name:v.name, rel:v.rel, sex:v.sex, birth:v.birth, blood:v.blood,
+      ptype: v.ptype==='本人档案' ? 'self' : 'managed',
+      consent: v.consent ? nowStr() + ' 已获本人同意' : '',
+      custodian: v.ptype==='本人档案' ? '' : '用户A'
+    };
+    if(data.ptype==='managed' && !data.consent){ toast('代管档案必须勾选已获同意'); return false; }
+    if(p){
+      if(p.consent && !data.consent) data.consent = p.consent;
+      Object.assign(p, data);
+      log('修改成员信息', v.name, '改');
+    } else {
+      DB.persons.push(Object.assign({
+        id:uid('p'), color:'#8B93A1', ini:(v.name||'?').slice(-1),
+        allergy:[], chronic:[], surgery:[], meds:[], contacts:[]
+      }, data));
+      log('添加成员', v.name + '（' + v.rel + '）', '人');
+    }
+    closeOverlay();
+    render();
+    if(p) openArchive(p.id);
+    toast('已保存');
+  });
+}
+
+/* ============================================================================
+   11. 我的 / 家庭管理 / 动态 / 导出 / 隐私
+   ============================================================================ */
+function renderMe(){
+  const rows = [
+    { t:'家庭管理', d:'成员 · 邀请码 · 权限说明', fn:'openFamily()', ic:'家', c:'#0B8057', bg:'#E7F7ED' },
+    { t:'家庭动态', d:'谁在什么时候看了 / 改了什么', fn:'openLogs()', ic:'动', c:'#1D4ED8', bg:'#EAF1FF' },
+    { t:'数据导出 / 备份', d:'JSON 全量导出 · 二期 PDF', fn:'openExport()', ic:'导', c:'#6D28D9', bg:'#F3EEFF' },
+    { t:'隐私与授权', d:'代管授权 · 敏感信息单独同意', fn:'openPrivacy()', ic:'隐', c:'#C2410C', bg:'#FFF1E7' },
+    { t:'紧急信息卡', d:'血型 / 过敏 / 用药 / 联系人', fn:'openEmergency("p1")', ic:'急', c:'#B91C1C', bg:'#FDE8E8' }
+  ];
+  return `
+  <div class="navbar"><div class="title">我的</div>${capsule()}</div>
+  <div class="page">
+    <div class="card" style="display:flex;align-items:center;gap:13px;cursor:pointer" onclick="openProfile()">
+      <div style="width:54px;height:54px;border-radius:50%;background:linear-gradient(140deg,#12B57C,#0B8057);
+        color:#fff;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:600">${DB.me.avatar}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:16px;font-weight:600">${DB.me.name}
+          <span style="font-size:11px;font-weight:600;color:#0B8057;background:#E7F6F0;
+            padding:2px 7px;border-radius:6px;margin-left:6px">${DB.me.role}</span></div>
+        <div class="muted" style="margin-top:4px">${DB.family.name} · ${DB.me.phone}</div>
+      </div>
+      <div style="color:#CBD2DA;font-size:17px">›</div>
+    </div>
+
+    <div class="card" style="padding:4px 14px">
+      ${rows.map((r,i)=>`
+        ${i?'<div class="hr" style="margin:0 -14px"></div>':''}
+        <div class="row" style="padding:14px 0" onclick='${r.fn}'>
+          <div class="ic" style="background:${r.bg};color:${r.c}">${r.ic}</div>
+          <div class="tx"><b>${r.t}</b><span>${r.d}</span></div>
+          <div class="go">›</div>
+        </div>`).join('')}
+    </div>
+
+    <div class="card" style="padding:4px 14px">
+      <div class="row" style="padding:14px 0" onclick="openPhoneChange()">
+        <div class="ic" style="background:#E7F6F0;color:#0B8057">机</div>
+        <div class="tx"><b>更换手机号</b><span>当前 ${DB.me.phone} · 需短信验证</span></div>
+        <div class="go">›</div>
+      </div>
+      <div class="row" style="padding:14px 0" onclick="toggleBig()">
+        <div class="ic" style="background:#EEF0FF;color:#4F46E5">字</div>
+        <div class="tx"><b>大字模式</b><span>老人使用，整体字号放大一档</span></div>
+        <div class="sw ${state.big?'on':''}"><i></i></div>
+      </div>
+    </div>
+
+    <div class="card" style="padding:4px 14px">
+      <div class="row" style="padding:14px 0" onclick="toast('v1.0 Demo · 静态数据')">
+        <div class="ic" style="background:#F2F5F8;color:#6B7280">关</div>
+        <div class="tx"><b>关于</b><span>v1.0 Demo</span></div>
+        <div class="go">›</div>
+      </div>
+    </div>
+
+    <div style="text-align:center;font-size:11px;color:#B6BDC6;padding:16px 24px 6px;line-height:1.75">
+      本产品为家庭健康信息记录工具<br>
+      不提供问诊、诊断、处方、用药建议等医疗服务<br>
+      一期无任何推送，提醒均为站内展示
+    </div>
+  </div>`;
+}
+function toggleBig(){
+  state.big = !state.big; render();
+  toast(state.big ? '已开启大字模式' : '已关闭大字模式');
+}
+function openProfile(){
+  openForm({
+    title:'个人信息', submit:'保存',
+    tip:'头像与昵称通过微信「头像昵称填写能力」获取（getUserProfile 早已失效）。手机号是加密字段，需短信验证后才能更换。',
+    fields:[
+      { k:'avatar', l:'头像（Demo 用单字）', t:'text', val:DB.me.avatar, ph:'1 个字' },
+      { k:'name', l:'昵称', t:'text', req:true, val:DB.me.name },
+      { k:'phone', l:'手机号', t:'text', val:DB.me.phone, ro:true,
+        hint:'如需更换，请用「我的 → 更换手机号」' },
+      { k:'fam', l:'所属家庭', t:'text', val:DB.family.name + '（邀请码 ' + DB.family.code + '）', ro:true }
+    ]
+  }, v=>{
+    DB.me.avatar = String(v.avatar || v.name || '?').slice(0,1);
+    DB.me.name = v.name;
+    log('修改个人信息', v.name, '改');
+    render(); toast('已保存');
+  });
+}
+function openPhoneChange(){
+  openForm({
+    title:'更换手机号', submit:'验证并更换',
+    tip:'新手机号需通过短信验证码验证。Demo 环境不会真的发送短信。',
+    fields:[
+      { k:'phone', l:'新手机号', t:'num', req:true, ph:'11 位手机号' },
+      { k:'code', l:'短信验证码', t:'text', req:true, ph:'6 位数字',
+        hint:'Demo：任意 6 位数字均可通过' }
+    ]
+  }, v=>{
+    if(!/^1\d{10}$/.test(String(v.phone))){ toast('手机号格式不正确'); return false; }
+    if(!/^\d{6}$/.test(String(v.code))){ toast('验证码应为 6 位数字'); return false; }
+    DB.me.phone = maskPhone(String(v.phone));
+    log('更换手机号', DB.me.phone, '改');
+    render(); toast('手机号已更换');
+  });
+}
+
+function openFamily(){
+  openOverlay(`
+    ${navOverlay('家庭管理', 'closeOverlay()')}
+    <div class="screen" style="flex:1">
+      <div class="page">
+        <div class="card">
+          <div class="sec-title"><h3><span class="bar"></span>邀请码</h3>
+            <span class="more">有效期 7 天</span></div>
+          <div style="display:flex;align-items:center;gap:12px">
+            <div style="font-size:26px;font-weight:700;letter-spacing:5px;color:#0B8057">${DB.family.code}</div>
+            <div class="btn ghost sm" style="padding:0 14px" onclick="toast('已复制邀请码')">复制</div>
+          </div>
+          <div class="muted" style="margin-top:8px;line-height:1.6">
+            家人输入邀请码申请加入，管理员审批通过后可见家庭数据</div>
+        </div>
+
+        ${DB.pending.length ? `<div class="card" style="background:#FFFBEB;border:1px solid #FDE68A">
+          <div class="sec-title"><h3 style="color:#B45309"><span class="bar" style="background:#F59E0B"></span>待审批</h3></div>
+          ${DB.pending.map(q=>`
+            <div class="pend">
+              <div class="b">${q.name.slice(-1)}</div>
+              <div style="flex:1;min-width:0">
+                <b style="font-size:14.5px">${q.name}</b>
+                <div class="muted" style="margin-top:3px">${q.rel} · ${q.phone} · ${q.at}</div>
+              </div>
+              <div class="mini-btn ok" onclick="approve('${q.id}',1)">同意</div>
+              <div class="mini-btn no" onclick="approve('${q.id}',0)">拒绝</div>
+            </div>`).join('')}
+        </div>` : ''}
+
+        <div class="card">
+          <div class="sec-title"><h3><span class="bar"></span>成员 ${DB.persons.length}</h3></div>
+          ${DB.persons.map(p=>`
+            <div class="row" onclick="openArchive('${p.id}')">
+              <div class="ic" style="background:${p.color};color:#fff;border-radius:50%">${p.ini}</div>
+              <div class="tx"><b>${p.name}</b>
+                <span>${p.rel||'—'} · ${p.ptype==='self'?'本人档案':'代管 · '+p.custodian}</span></div>
+              <div class="mini-btn no" onclick="event.stopPropagation();removeMember('${p.id}')">移除</div>
+            </div>`).join('')}
+          <div class="addline" onclick="openPersonForm()">＋ 直接添加成员</div>
+        </div>
+
+        <div class="card">
+          <div class="sec-title"><h3><span class="bar"></span>权限说明</h3></div>
+          <div class="muted" style="line-height:1.85">
+            管理员只负责成员进出，<b>不代表能查看所有档案</b>。<br/>
+            每条档案的可见性由 person_access 决定：<br/>
+            owner（本人）· edit（可编辑）· read（只读）· none
+          </div>
+        </div>
+        <div style="padding:4px 14px 22px">
+          <div class="btn plain" onclick="toast('Demo：邀请二维码 / 权限移交')">生成邀请二维码</div>
+        </div>
+      </div>
+    </div>`);
+}
+function removeMember(pid){
+  const p = P(pid);
+  confirmBox('确认将「' + p.name + '」移出家庭？档案会归档保留', ()=>{
+    DB.persons = DB.persons.filter(x=>x.id!==pid);
+    if(state.person===pid) state.person = 'all';
+    log('移除成员', p.name, '删');
+    closeOverlay(); render(); toast('已移出家庭');
+  });
+}
+
+function openLogs(){
+  openOverlay(`
+    ${navOverlay('家庭动态', 'closeOverlay()')}
+    <div class="screen" style="flex:1">
+      <div class="page">
+        <div style="padding:6px 18px 0;font-size:12px;color:#9CA3AF;line-height:1.65">
+          所有档案操作留痕（audit_log）。<br/>
+          健康数据敏感，谁看过、谁改过都要可追溯。
+        </div>
+        <div class="card">
+          ${DB.logs.map(l=>{
+            const col = LOGCOLOR[l.ic] || ['#6D28D9','#F3EEFF'];
+            return `<div class="logitem">
+              <div class="ic" style="background:${col[1]};color:${col[0]}">${l.ic}</div>
+              <div class="tx"><b style="font-weight:500">${l.who}</b>
+                <span style="color:#6B7280"> ${l.act}</span><br/>
+                <span>${l.target}</span>
+                <div class="w">${l.at}</div></div>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>
+    </div>`);
+}
+
+function openExport(){
+  const archiveCount = DB.persons.reduce((s,p)=>
+    s + p.allergy.length + p.chronic.length + p.surgery.length + p.meds.length, 0);
+  openOverlay(`
+    ${navOverlay('数据导出 / 备份', 'closeOverlay()')}
+    <div class="screen" style="flex:1">
+      <div class="page">
+        <div class="card" style="background:#E7F6F0;box-shadow:none">
+          <div style="font-size:13.5px;font-weight:600;color:#0B8057">你的数据永远可以带走</div>
+          <div class="muted" style="margin-top:6px;line-height:1.7">
+            不锁定用户数据。可随时导出全部档案，离线保存或迁到别处。</div>
+        </div>
+        <div class="card">
+          <div class="row" onclick="doExport()">
+            <div class="ic" style="background:#F3EEFF;color:#6D28D9">JS</div>
+            <div class="tx"><b>导出为 JSON（全量）</b><span>含所有成员、病程、用药、检查记录</span></div>
+            <div class="go">›</div>
+          </div>
+          <div class="row" onclick="toast('二期：导出为 PDF / 图片')">
+            <div class="ic" style="background:#FFF1E7;color:#C2410C">PD</div>
+            <div class="tx"><b>导出为 PDF / 图片</b><span>医生摘要、病程单可打印 · 二期</span></div>
+            <div class="go">›</div>
+          </div>
+          <div class="row" onclick="toast('Demo：附件打包下载')">
+            <div class="ic" style="background:#EAF1FF;color:#1D4ED8">附</div>
+            <div class="tx"><b>打包下载附件</b><span>照片、化验单原始文件</span></div>
+            <div class="go">›</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="sec-title"><h3><span class="bar"></span>数据概览</h3></div>
+          <div class="kv"><div class="k">成员</div><div class="v">${DB.persons.length} 人</div></div>
+          <div class="kv"><div class="k">时间线</div><div class="v">${DB.events.length} 条</div></div>
+          <div class="kv"><div class="k">档案项</div><div class="v">${archiveCount} 条</div></div>
+          <div class="kv"><div class="k">操作日志</div><div class="v">${DB.logs.length} 条</div></div>
+        </div>
+        <div style="padding:4px 14px 20px">
+          <div class="btn primary" onclick="doExport()">立即导出全量数据</div>
+        </div>
+      </div>
+    </div>`);
+}
+function doExport(){
+  const blob = JSON.stringify({
+    exported_at: nowStr(), family:DB.family, persons:DB.persons,
+    events:DB.events, conditions:DB.conditions, todos:DB.todos
+  }, null, 2);
+  try{
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([blob], { type:'application/json' }));
+    a.download = 'family-health-' + TODAY + '.json';
+    a.click();
+  }catch(e){}
+  log('导出数据', '全量 JSON', '导');
+  toast('已导出 JSON（' + Math.round(blob.length/1024) + ' KB）', 1800);
+}
+
+function openPrivacy(){
+  openOverlay(`
+    ${navOverlay('隐私与授权', 'closeOverlay()')}
+    <div class="screen" style="flex:1">
+      <div class="page">
+        <div class="card">
+          <div class="sec-title"><h3><span class="bar"></span>代管授权</h3>
+            <span class="more">个保法第 29 条</span></div>
+          ${DB.persons.filter(p=>p.ptype==='managed').map(p=>`
+            <div class="row" style="cursor:default">
+              <div class="ic" style="background:${p.color};color:#fff;border-radius:50%">${p.ini}</div>
+              <div class="tx"><b>${p.name}（代管）</b>
+                <span>代管人 ${p.custodian} · ${p.consent || '未记录授权'}</span></div>
+              <div class="mini-btn ${p.consent?'ok':'no'}">${p.consent?'已授权':'待授权'}</div>
+            </div>`).join('') || '<div class="muted" style="padding:8px 0">暂无代管档案</div>'}
+        </div>
+        <div class="card">
+          <div class="sec-title"><h3><span class="bar"></span>敏感信息处理说明</h3></div>
+          <div class="muted" style="line-height:1.95">
+            · 健康信息属敏感个人信息，处理前须取得<b>单独同意</b>，不与一般条款捆绑<br/>
+            · 档案共享以<b>归属人本人授权</b>为前提，代管需本人（或监护人）同意<br/>
+            · 手机号、身份证号、紧急联系人电话均<b>加密存储</b>（AES-256-GCM）<br/>
+            · 附件为<b>私有资源</b>，只发临时链接，绝不产生公开可访问 URL<br/>
+            · 不与医院 HIS 对接，不向第三方共享
+          </div>
+        </div>
+        <div class="card">
+          <div class="sec-title"><h3><span class="bar"></span>我的授权</h3></div>
+          <div class="row" onclick="toast('Demo')">
+            <div class="ic" style="background:#F2F5F8;color:#6B7280">协</div>
+            <div class="tx"><b>《用户服务协议》</b><span>2026-03-05 已同意</span></div>
+            <div class="go">›</div>
+          </div>
+          <div class="row" onclick="toast('Demo')">
+            <div class="ic" style="background:#F2F5F8;color:#6B7280">隐</div>
+            <div class="tx"><b>《隐私政策》</b><span>2026-03-05 已同意</span></div>
+            <div class="go">›</div>
+          </div>
+          <div class="row" onclick="toast('Demo：撤回后档案转为只读')">
+            <div class="ic" style="background:#FDE8E8;color:#B91C1C">撤</div>
+            <div class="tx"><b>撤回授权 / 注销账号</b><span>撤回后档案转只读，仍可导出</span></div>
+            <div class="go">›</div>
+          </div>
+        </div>
+      </div>
+    </div>`);
+}
+
+/* ============================================================================
+   12. 紧急信息卡
+   ============================================================================ */
+function openEmergency(pid){
+  const p = P(pid) || DB.persons[0];
+  openOverlay(`
+    ${navOverlay('紧急信息卡', 'closeOverlay()')}
+    <div class="screen" style="flex:1">
+      <div class="page">
+        <div class="card emg" style="border-radius:18px">
+          <div class="emg-hd">${icon('fam','#B91C1C',1.9)} 紧急信息</div>
+          <div style="font-size:21px;font-weight:700;margin-top:12px">${p.name}</div>
+          <div class="muted" style="margin-top:5px">${p.sex} · ${calcAge(p.birth)} 岁 · ${p.blood} 型</div>
+          <div style="margin-top:14px">
+            <div class="emg-line"><div class="k">过敏史</div>
+              <div style="flex:1;color:#B91C1C;font-weight:600">
+                ${p.allergy.length ? p.allergy.map(x=>x.n+'（'+x.sev+'）').join('、') : '无已知过敏'}</div></div>
+            <div class="emg-line"><div class="k">基础病</div>
+              <div style="flex:1">${p.chronic.map(x=>x.n).join('、')||'无'}</div></div>
+            <div class="emg-line"><div class="k">在服药物</div>
+              <div style="flex:1">${activeMeds(p).map(x=>
+                x.n + (x.sp?' '+x.sp:'') + (x.end?' <span style="color:#C97B7B;font-size:11px">短期</span>':'')).join('<br/>') || '无'}</div></div>
+            <div class="emg-line"><div class="k">手术史</div>
+              <div style="flex:1">${p.surgery.map(x=>(x.d||'').slice(0,4)+' '+x.n).join('、')||'无'}</div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="sec-title"><h3><span class="bar"></span>紧急联系人</h3>
+            <span class="more">按优先级排序</span></div>
+          ${p.contacts.length ? p.contacts.map(x=>`
+            <div class="row">
+              <div class="ic" style="background:#E7F6F0;color:#0B8057">${x.pr}</div>
+              <div class="tx"><b>${x.n}</b><span>${x.rel} · ${x.phone}</span></div>
+              <div style="display:flex;gap:7px">
+                <div class="mini-btn no" onclick="ITEM_BACK='emergency';editItem('${p.id}','contacts','${x.n}')">编辑</div>
+                <div class="mini-btn ok" onclick="toast('Demo：拨号 ${x.phone}')">呼叫</div>
+              </div>
+            </div>`).join('') : '<div class="muted" style="padding:8px 0">未添加紧急联系人</div>'}
+          <div class="addline" onclick="ITEM_BACK='emergency';addItem('${p.id}','contacts')">＋ 添加紧急联系人</div>
+        </div>
+        <div class="card" style="background:#F7F9FB;box-shadow:none">
+          <div class="muted" style="line-height:1.75">
+            本卡为家庭自填记录，非医疗机构出具。<br/>紧急情况请立即拨打 120。</div>
+        </div>
+        <div style="padding:4px 14px 22px;display:flex;gap:10px">
+          <div class="btn ghost" style="flex:1" onclick="toast('Demo：添加到锁屏')">添加到锁屏</div>
+          <div class="btn primary" style="flex:1" onclick="toast('Demo：已放大，可直接递手机')">全屏出示</div>
+        </div>
+      </div>
+    </div>`);
+}
+
+/* ============================================================================
+   13. 补记流程（3 步）
+   ============================================================================ */
+let REC = {};
+function openRecord(){
+  REC = { step:1, pid: state.person==='all' ? (DB.persons[0]||{}).id : state.person,
+    symptom:'', start:'2026-10-14', days:[{ d:'10.13', s:'', m:'' }], ended:null };
+  drawRecord();
+}
+function drawRecord(){
+  const s = REC.step;
+  const bar = `<div class="steps-bar"><i class="${s>=1?'on':''}"></i><i class="${s>=2?'on':''}"></i><i class="${s>=3?'on':''}"></i></div>`;
+  let title = '', body = '', foot = '';
+
+  if(s===1){
+    title = '补记 · 这次是什么？';
+    body = `
+      <div class="fld"><label>给谁记</label>
+        <div class="opts">${DB.persons.map(p=>`<div class="opt ${REC.pid===p.id?'on':''}"
+          onclick="REC.pid='${p.id}';drawRecord()">${p.name}</div>`).join('')}</div></div>
+      <div class="fld"><label>症状 / 病程名称 <span class="req">*</span></label>
+        <div class="opts">${['咳嗽','发热','腹泻','咽痛','头痛','皮疹','其他'].map(x=>
+          `<div class="opt ${REC.symptom===x?'on':''}"
+            onclick="REC.symptom='${x}';drawRecord()">${x}</div>`).join('')}</div></div>
+      <div class="fld"><label>开始日期（可回溯，默认昨天）</label>
+        <input type="date" value="${REC.start}" oninput="REC.start=this.value"
+          style="width:100%;border:1px solid #E4E8ED;border-radius:10px;padding:10px 12px;
+          font-size:14px;font-family:inherit;outline:none;background:#fff"/>
+        <div class="muted" style="margin-top:7px;line-height:1.6">
+          补记模式：occurred_at（实际发生）与 recorded_at（今天补录）分开存储</div></div>`;
+    foot = `<div class="btn primary" style="flex:1" onclick="nextRec(1)">下一步</div>`;
+  }
+
+  if(s===2){
+    title = '补记 · 逐日填写';
+    body = `
+      <div class="muted" style="margin-bottom:12px;line-height:1.6">
+        一次把几天补完 · 允许某天留空（空也是有价值的信息）</div>
+      ${REC.days.map((d,i)=>`
+        <div style="border:1px solid #EEF1F4;border-radius:12px;padding:11px 12px;margin-bottom:9px;background:#FCFDFE">
+          <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+            <b style="font-size:13px">${d.d}</b><span class="muted">第 ${i+1} 天</span></div>
+          <input placeholder="症状（如 咳嗽 轻 / 无）" value="${d.s}"
+            oninput="REC.days[${i}].s=this.value"
+            style="width:100%;border:1px solid #E4E8ED;border-radius:9px;padding:9px 11px;
+            font-size:13.5px;margin-bottom:7px;font-family:inherit;outline:none"/>
+          <input placeholder="用药 / 体温 / 备注" value="${d.m}"
+            oninput="REC.days[${i}].m=this.value"
+            style="width:100%;border:1px solid #E4E8ED;border-radius:9px;padding:9px 11px;
+            font-size:13.5px;font-family:inherit;outline:none"/>
+        </div>`).join('')}
+      <div class="addline" onclick="addDay()">＋ 添加一天</div>`;
+    foot = `<div class="btn ghost" style="flex:1" onclick="REC.step=1;drawRecord()">上一步</div>
+            <div class="btn primary" style="flex:1.6" onclick="nextRec(2)">下一步</div>`;
+  }
+
+  if(s===3){
+    title = '补记 · 结束了吗？';
+    body = `
+      <div class="fld"><label>本次病程状态 <span class="req">*</span></label>
+        <div class="opts">
+          <div class="opt ${REC.ended===false?'on':''}" onclick="REC.ended=false;drawRecord()">还在继续</div>
+          <div class="opt ${REC.ended===true?'on':''}"  onclick="REC.ended=true;drawRecord()">已结束</div>
+        </div></div>
+      <div style="background:#F9FBFC;border-radius:12px;padding:12px 14px">
+        <div class="kv"><div class="k">成员</div><div class="v"><b>${(P(REC.pid).name)||'—'}</b></div></div>
+        <div class="kv"><div class="k">病程</div><div class="v"><b>${REC.symptom||'咳嗽'}</b></div></div>
+        <div class="kv"><div class="k">开始</div><div class="v">${REC.start}</div></div>
+        <div class="kv"><div class="k">记录</div><div class="v">${REC.days.length} 天</div></div>
+        <div class="kv"><div class="k">状态</div><div class="v">${REC.ended===null?'未选择':REC.ended?'已结束':'进行中'}</div></div>
+      </div>
+      <div class="muted" style="margin-top:12px;line-height:1.7">
+        提交后写入 condition + timeline_event，并出现在健康时间线顶部</div>`;
+    foot = `<div class="btn ghost" style="flex:1" onclick="REC.step=2;drawRecord()">上一步</div>
+            <div class="btn primary" style="flex:1.6" onclick="submitRec()">保存补记</div>`;
+  }
+
+  openOverlay(`
+    <div class="navbar"><div class="title">${title}</div>${capsule()}</div>
+    <div class="sheet-body" style="max-height:none;flex:1;border-radius:0">
+      ${bar}<div class="sheet-bd">${body}</div><div class="sheet-ft">${foot}</div>
+    </div>`);
+}
+function nextRec(from){
+  if(from===1 && !REC.symptom){ toast('请选择症状'); return; }
+  if(from===2){ REC.step = 3; REC.ended = null; } else REC.step = from+1;
+  drawRecord();
+}
+function addDay(){
+  const l = REC.days[REC.days.length-1].d.split('.');
+  let mm = +l[0], dd = +l[1] + 1;
+  if(dd>31){ dd=1; mm++; }
+  REC.days.push({ d: pad(mm)+'.'+pad(dd), s:'', m:'' });
+  drawRecord();
+}
+function submitRec(){
+  if(REC.ended===null){ toast('请选择是否已结束'); return; }
+  const cid = uid('c');
+  const evs = REC.days.map(d=>({
+    date: '2026-' + d.d.replace('.','-'), time:'',
+    type: d.s ? 'symptom' : 'empty',
+    text: d.s || d.m || '—（无记录）', sev:1, sevT:''
+  }));
+  const meds = REC.days.map(d=>d.m).filter(x=> x && /服用|药/.test(x));
+  DB.conditions[cid] = {
+    pid: REC.pid, title: REC.symptom || '不适', start: REC.start,
+    ongoing: !REC.ended, events: evs,
+    medSummary: meds.length ? meds.join(' / ') : '—', visited:'未就诊'
+  };
+  DB.events.unshift({
+    id: uid('e'), pid: REC.pid, type:'condition', title: REC.symptom || '不适',
+    ongoing: !REC.ended, date: REC.start,
+    sub: REC.start.slice(5).replace('-','.') + ' 起 · ' + REC.days.length + ' 天',
+    ref: cid
+  });
+  log('新增补记', ((P(REC.pid).name)||'') + ' · ' + (REC.symptom||'不适'), '记');
+  closeOverlay(); render();
+  toast('补记已保存，已出现在健康时间线');
+}
+
+/* ============================================================================
+   14. 记录就诊 / 检查 / 疫苗 / 待办
+   ============================================================================ */
+function personField(){
+  const cur = state.person==='all' ? '' : (P(state.person).name || '');
+  return { k:'pid', l:'给谁记', t:'chips', single:true, req:true,
+    opts: DB.persons.map(p=>p.name),
+    val: cur || ((DB.persons[0]||{}).name || '') };
+}
+function pidByName(n){ const p = DB.persons.find(x=>x.name===n); return p ? p.id : (DB.persons[0]||{}).id; }
+
+function openVisitForm(){
+  openForm({ title:'记录就诊', submit:'保存',
+    fields:[ personField(),
+      { k:'date', l:'就诊日期', t:'date', val:TODAY, req:true },
+      { k:'hospital', l:'医院', t:'text', req:true, ph:'如 市第一人民医院' },
+      { k:'dept', l:'科室', t:'text', ph:'如 呼吸内科' },
+      { k:'vtype', l:'就诊类型', t:'chips', single:true, opts:['门诊','急诊','住院','复诊'], val:'门诊' },
+      { k:'doctor', l:'医生（可空）', t:'text' },
+      { k:'diag', l:'医生诊断（照抄医生原话）', t:'textarea',
+        hint:'系统不会自动生成任何诊断，此处只记录医生说的话' },
+      { k:'advice', l:'医嘱（可空）', t:'text' }
+    ]}, v=>{
+      DB.events.unshift({ id:uid('e'), pid:pidByName(v.pid), type:'visit',
+        title: v.hospital + (v.dept ? ' · ' + v.dept : ''), date:v.date,
+        sub: v.vtype + (v.diag ? ' · 医生记录：' + v.diag.slice(0,14) : '') });
+      log('新增就诊记录', v.pid + ' · ' + v.hospital, '添');
+      render(); toast('就诊记录已保存');
+    });
+}
+function openExamForm(){
+  openForm({ title:'记录检查 / 体检', submit:'保存',
+    fields:[ personField(),
+      { k:'rtype', l:'报告类型', t:'chips', single:true, req:true,
+        opts:['化验','影像','体检','其他'], val:'化验',
+        hint:'类型决定它在时间线上显示为「检查」还是「体检」' },
+      { k:'name', l:'项目名称', t:'text', req:true, ph:'如 血常规 / 胸部 CT / 年度体检' },
+      { k:'date', l:'检查日期', t:'date', val:TODAY, req:true },
+      { k:'hospital', l:'医院 / 机构', t:'text' },
+      { k:'summary', l:'结论摘要（可空）', t:'textarea', ph:'手填或二期 OCR 提取' }
+    ]}, v=>{
+      DB.events.unshift({ id:uid('e'), pid:pidByName(v.pid),
+        type: v.rtype==='体检' ? 'checkup' : 'exam',
+        title:v.name, date:v.date, sub: v.summary || v.hospital || '见报告' });
+      log('新增检查报告', v.pid + ' · ' + v.name, '添');
+      render(); toast('检查记录已保存');
+    });
+}
+function openVaccineForm(){
+  openForm({ title:'记录疫苗', submit:'保存',
+    fields:[ personField(),
+      { k:'name', l:'疫苗名称', t:'text', req:true, ph:'如 流感疫苗' },
+      { k:'dose', l:'针次', t:'chips', single:true, opts:['第 1 针','第 2 针','第 3 针','加强针'], val:'第 1 针' },
+      { k:'date', l:'接种日期', t:'date', val:TODAY, req:true },
+      { k:'inst', l:'接种机构', t:'text' },
+      { k:'next', l:'下一针日期（可空）', t:'date', hint:'填写后会自动生成一条待办' }
+    ]}, v=>{
+      const pid = pidByName(v.pid);
+      DB.events.unshift({ id:uid('e'), pid, type:'vaccine',
+        title: v.name + ' · ' + v.dose, date:v.date, sub: v.inst || '社区卫生服务中心' });
+      if(v.next) DB.todos.unshift({ id:uid('t'), pid, title: v.name + ' · 下一针',
+        due: v.next.slice(5), cls:'ok', note:'自动生成', done:false });
+      log('新增疫苗记录', v.pid + ' · ' + v.name, '添');
+      render(); toast('疫苗记录已保存' + (v.next ? '，并生成待办' : ''));
+    });
+}
+function openTodoForm(){
+  openForm({ title:'添加待办', submit:'保存', tip:'一期无推送，待办只在首页站内展示',
+    fields:[ personField(),
+      { k:'type', l:'类型', t:'chips', single:true, req:true,
+        opts:['复查','疫苗','体检','自定义'], val:'复查' },
+      { k:'title', l:'事项', t:'text', req:true, ph:'如 呼吸内科复查' },
+      { k:'date', l:'日期', t:'date', val:TODAY, req:true },
+      { k:'ahead', l:'提前几天在首页高亮', t:'chips', single:true, opts:['1 天','3 天','7 天'], val:'3 天' },
+      { k:'note', l:'备注（可空）', t:'text' }
+    ]}, v=>{
+      DB.todos.unshift({ id:uid('t'), pid:pidByName(v.pid), title:v.title,
+        due:v.date.slice(5), cls:'ok', note: v.note || (v.ahead + '提醒'), done:false });
+      log('添加待办', v.pid + ' · ' + v.title, '添');
+      render(); toast('待办已添加');
+    });
+}
+
+/* ============================================================================
+   15. 启动
+   ============================================================================ */
+function tick(){
+  const d = new Date();
+  $('clock').textContent = pad(d.getHours()) + ':' + pad(d.getMinutes());
+}
+tick(); setInterval(tick, 20000);
+render();
+</script>
+</body>
+</html>

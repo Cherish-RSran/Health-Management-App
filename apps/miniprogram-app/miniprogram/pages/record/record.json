@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "记录",
+  "usingComponents": {
+    "form-sheet": "/components/form-sheet/form-sheet"
+  }
+}

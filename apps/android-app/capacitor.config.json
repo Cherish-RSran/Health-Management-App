@@ -1,0 +1,12 @@
+{
+  "appId": "com.familyhealth.archive",
+  "appName": "家庭健康档案",
+  "webDir": "dist",
+  "android": {
+    "allowMixedContent": false,
+    "webContentsDebuggingEnabled": false
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}

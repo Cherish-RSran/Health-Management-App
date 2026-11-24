@@ -1,0 +1,85 @@
+/* 医生摘要 */
+
+.auto-card { background: var(--brand-2); }
+.auto-title { font-size: 27rpx; font-weight: 600; color: var(--brand-3); }
+.auto-body { font-size: 24rpx; color: #17624a; margin-top: 10rpx; line-height: 1.7; }
+
+.switch {
+  width: 92rpx; height: 54rpx; border-radius: 30rpx;
+  background: #DFE4EA; position: relative; flex-shrink: 0;
+}
+.switch.on { background: var(--brand); }
+.knob {
+  position: absolute; top: 5rpx; left: 5rpx;
+  width: 44rpx; height: 44rpx; border-radius: 50%;
+  background: #fff; box-shadow: 0 2rpx 6rpx rgba(0,0,0,.18);
+  transition: left .2s;
+}
+.switch.on .knob { left: 43rpx; }
+
+/* 预览 */
+.pv-head { padding-bottom: 20rpx; border-bottom: 2rpx solid #EEF1F4; }
+.pv-name { font-size: 38rpx; font-weight: 700; }
+.pv-meta { font-size: 25rpx; color: var(--t3); margin-top: 8rpx; }
+
+.pv-block { padding: 22rpx 0; border-bottom: 1rpx solid var(--line); }
+.pv-block:last-child { border-bottom: none; }
+.pv-label { font-size: 23rpx; color: var(--t3); font-weight: 600; margin-bottom: 10rpx; }
+.pv-text { font-size: 28rpx; line-height: 1.7; }
+.pv-danger { background: #FEF2F2; border-radius: 16rpx; padding: 22rpx; margin: 10rpx 0; }
+.pv-danger .pv-label { color: #B91C1C; }
+.pv-danger .pv-text { color: #B91C1C; font-weight: 600; }
+
+.bottom-actions { display: flex; padding: 32rpx 28rpx 60rpx; }
+.sum-btn { flex: 1.6; margin-left: 20rpx; }
+.ml20 { margin-left: 20rpx; }
+
+/* ===== 全屏医生模式 ===== */
+.doctor {
+  position: fixed; left: 0; right: 0; top: 0; bottom: 0;
+  background: #fff; z-index: 500;
+  display: flex; flex-direction: column;
+}
+.doc-head {
+  padding: 40rpx 40rpx 28rpx;
+  border-bottom: 3rpx solid #16191F;
+}
+.doc-tag { font-size: 23rpx; color: var(--t3); letter-spacing: 3rpx; font-weight: 600; }
+.doc-name { font-size: 50rpx; font-weight: 700; margin-top: 14rpx; }
+.doc-meta { font-size: 28rpx; color: var(--t2); margin-top: 10rpx; }
+.doc-time { font-size: 22rpx; color: var(--t3); margin-top: 10rpx; }
+
+.doc-body { flex: 1; padding: 8rpx 40rpx 40rpx; }
+
+.dsec { padding: 26rpx 0; border-bottom: 1rpx solid var(--line); }
+.dsec-label {
+  font-size: 24rpx; color: var(--t3); font-weight: 700;
+  letter-spacing: 1rpx; margin-bottom: 14rpx;
+}
+.dsec-text { font-size: 34rpx; line-height: 1.7; }
+
+.allergy {
+  background: #FEF2F2; border: 2rpx solid #FBD5D5; border-radius: 20rpx;
+  padding: 26rpx; margin: 20rpx -10rpx 10rpx;
+  border-bottom: 2rpx solid #FBD5D5;
+}
+.allergy .dsec-label { color: #B91C1C; }
+.allergy .dsec-text { color: #B91C1C; font-weight: 700; font-size: 40rpx; }
+
+.doc-note {
+  font-size: 22rpx; color: var(--t3); text-align: center;
+  padding: 40rpx 0 20rpx;
+}
+.doc-foot {
+  display: flex; padding: 24rpx 40rpx calc(32rpx + env(safe-area-inset-bottom));
+  border-top: 1rpx solid var(--line);
+}
+
+/* 离屏画布：导出图片用，移出可视区 */
+.export-canvas {
+  position: fixed;
+  left: -9999px;
+  top: 0;
+  width: 640px;
+  height: 200px;
+}
